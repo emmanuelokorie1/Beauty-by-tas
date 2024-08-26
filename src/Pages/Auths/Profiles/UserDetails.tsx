@@ -34,8 +34,8 @@ const UserDetails = () => {
   };
 
   return (
-    <div className="flex justify-between gap-[1.5rem]">
-      <section className="w-[65%] ">
+    <div className="s1100:flex justify-between gap-[1.5rem]">
+      <section className="s1100:w-[65%] w-[100%] ">
         <aside className="bg-[#F3F3F3] p-[2rem] rounded-lg">
           <div className="flex justify-between pb-[2rem]">
             <div className=" text-[1.2rem] fontdm">Personal information</div>
@@ -47,7 +47,7 @@ const UserDetails = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-[2rem]">
+          <div className="grid s900:grid-cols-2 grid-cols-1 gap-[2rem]">
             <div>
               {edit?.personal ? (
                 <>
@@ -118,7 +118,7 @@ const UserDetails = () => {
           <div className="">
             <div className="border-b pb-[1rem]">
               {edit?.account ? (
-                <div className="w-[60%]">
+                <div className="s900:w-[60%] w-[100%]">
                   <InputLabel
                     defaultValue={email}
                     setInputValue={setEmail}
@@ -157,7 +157,7 @@ const UserDetails = () => {
                 </div>
               </div>
               {edit?.password ? (
-                <div className="w-[60%]">
+                <div className="s900:w-[60%] w-[100%]">
                   <InputLabel
                     defaultValue={password}
                     setInputValue={setPassword}
@@ -183,12 +183,12 @@ const UserDetails = () => {
               )}
 
               {edit?.password && (
-                <div className="flex items-center gap-[.5rem] mt-[2rem]">
+                <div className="md:flex items-center gap-[.5rem] mt-[2rem]">
                   <CustomButton
                     text={"Save Changes"}
                     classNames="hover:bg-primary-deepRed bg-[#91566D] text-[.95rem] w-fit text-white px-[2rem] py-3"
                   />
-                  <div className="text-[.8rem] flex items-center gap-[.3rem] text-red-600">
+                  <div className="text-[.8rem] flex items-center gap-[.3rem] text-red-600 pt-[1rem] md:pt-0">
                     <PiInfo size={20} /> Please note: Changing your password will require
                     you to log in again.
                   </div>
@@ -199,7 +199,7 @@ const UserDetails = () => {
         </aside>
       </section>
 
-      <section className="w-[35%]">
+      <section className="s1100:w-[35%] w-[100%] mt-[1.5rem] s1100:mt-0">
         <aside className="bg-[#F3F3F3] px-[1rem] py-[2rem] rounded-lg">
           <div className="flex justify-between pb-[2rem]">
             <div className=" text-[1.2rem] fontdm">Address Information</div>

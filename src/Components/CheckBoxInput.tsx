@@ -1,6 +1,6 @@
 
 interface customProps {
-  text: String;
+  text: any;
   setIsChecked: any;
   isChecked: any;
 }

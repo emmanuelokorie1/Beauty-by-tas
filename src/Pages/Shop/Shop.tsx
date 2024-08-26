@@ -37,8 +37,6 @@ function Shop() {
   const [tabNav, setTabNav] = useState<subNav1>(
     data?.categories && data?.categories[0]
   );
-
-  console.log(data?.categories);
   
 
   // const SortBy = [
@@ -69,7 +67,7 @@ function Shop() {
           style={{ paddingTop: "8px" }}
         >
           <div className="flex gap-[1rem] s900:w-[50%] w-[70%] flex-wrap">
-            {subNav.map((e: subNav1, i: number) => (
+            {subNav && subNav.map((e: subNav1, i: number) => (
               <button
                 key={i}
                 onClick={() => setTabNav(e)}

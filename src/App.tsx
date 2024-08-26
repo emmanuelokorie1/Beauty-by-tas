@@ -15,6 +15,8 @@ import Cart from "./Pages/Cart/Cart";
 import Login from "./Pages/Auths/NotAth/Login";
 import SignUp from "./Pages/Auths/NotAth/SignUp";
 import ForgetPassword from "./Pages/Auths/NotAth/ForgetPassword";
+import Faq from "./Pages/Faq/Faq";
+import Privacy from "./Pages/Faq/Privacy";
 // import Layouts from "./Layouts/Layouts";
 // import Loading from "./Layouts/Loading";
 
@@ -112,6 +114,24 @@ function App() {
             <Route path="sign-up" element={<SignUp />} />
             <Route path="forget-password" element={<ForgetPassword />} />
           </Route>
+
+          <Route
+            path="/faq"
+            element={
+              <Suspense fallback={<Loading />}>
+                <Faq />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/privacy"
+            element={
+              <Suspense fallback={<Loading />}>
+                <Privacy />
+              </Suspense>
+            }
+          />
         </Route>
       </Route>
     )
