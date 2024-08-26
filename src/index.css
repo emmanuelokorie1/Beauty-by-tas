@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: displayRegular;
+  src: url(./assets/fonts/display/DMSerifDisplay-Regular.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: displayRegularItalic;
+  src: url(./assets/fonts/display/DMSerifDisplay-Italic.ttf) format("woff2");
+  font-display: swap;
+}
+
+/* Rubik fonts */
+@font-face {
+  font-family: RegularRebuk;
+  src: url(./assets/fonts/rubik/Rubik-Regular.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: MediumRebuk;
+  src: url(./assets/fonts/rubik/Rubik-Medium.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: MediumRebukItalic;
+  src: url(./assets/fonts/rubik/Rubik-MediumItalic.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: lightRebuk;
+  src: url(./assets/fonts/rubik/Rubik-Light.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: boldRebuk;
+  src: url(./assets/fonts/rubik/Rubik-Bold.ttf) format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: boldRebukItalic;
+  src: url(./assets/fonts/rubik/Rubik-BoldItalic.ttf) format("woff2");
+  font-display: swap;
+}
+
+body {
+  font-family: MediumRebuk;
+  /* max-width: 1400px; */
+  /* margin: auto; */
+}
+
+.active {
+  color: #ff779f;
+  /* font-size: 1rem; */
+}
+
+.arco-carousel-indicator-wrapper-bottom {
+  display: none !important;
+}
+
+.containers {
+  @apply s1000:px-[5rem] s900:px-[3rem] sm:px-[2rem] px-[1rem];
+}
+
+.headerText {
+  @apply font-semibold text-gray-700 md:text-[1.4rem] text-[1.2rem];
+}
+
+.linkBtn {
+  @apply uppercase underline text-[.85rem] cursor-pointer text-primary-deepRed transition-all
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px; /* Change the height of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e6d3d2; /* Change the color of the scrollbar */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Optional: Change the background of the scrollbar track */
+}
+
+.swiper-pagination-fraction,
+.swiper-pagination-custom,
+.swiper-horizontal > .swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal {
+  display: none !important;
+}
+
+.mySwiper {
+  position: relative;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #000; /* Set the color so they are visible */
+  top: 50%; /* Align them vertically */
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.swiper-button-next:after {
+  color: #000;
+  font-size: 2rem !important;
+  margin-left: 1.6rem;
+  z-index: 999;
+}
+
+.swiper-button-prev:after {
+  color: #000;
+  font-size: 2rem !important;
+  margin-right: 1.6rem;
+  z-index: 999;
+}
+
+.fontdm {
+  font-family: displayRegular;
+}
+
+.pxMedia {
+  @apply s900:px-px md:px-[3rem] sm:px-[2rem] px-[1rem]
+}
+
+/* Hide the default checkbox */
+.custom-checkbox input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Create a custom checkbox */
+.custom-checkbox .checkmark {
+  position: relative;
+  height: 20px;
+  width: 20px;
+  background-color: #ccc; /* Default background color */
+  border-radius: 4px; /* Optional: rounded corners */
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* On hover, add a background color */
+.custom-checkbox:hover input ~ .checkmark {
+  background-color: #b3b3b3;
+}
+
+/* When the checkbox is checked, change the background color */
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #752C49; /* Green background when checked */
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+@media screen and (min-width: 1500px) {
+  body {
+    font-size: 1.2rem; 
+    padding: 1rem;
+  }
+
+  .containerMain {
+    max-width: 1400px; 
+    margin: 0 auto;
+  }
+}
