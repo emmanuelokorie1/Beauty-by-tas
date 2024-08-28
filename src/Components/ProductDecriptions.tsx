@@ -128,8 +128,8 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
             </aside>
             <aside className="w-[70%]">
               <CustomButton
-                text={"Remove to Bag"}
-                classNames="bg-red-600 w-[100%] text-white px-[1.5rem] py-[.5rem]"
+                text={"Add to cart"}
+                classNames="bg-primary-deepRed w-[100%] text-white px-[1.5rem] py-[.5rem] cursor-pointer"
               />
             </aside>
           </div>

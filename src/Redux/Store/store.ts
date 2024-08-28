@@ -1,10 +1,12 @@
-// src/app/store.ts (or store.js)
+// src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import categorydataReducer from '../Slices/CategorySlice';
+import authDataReducer from '../Slices/AuthSlice';
 
 const store = configureStore({
   reducer: {
     data: categorydataReducer,
+    auth: authDataReducer, // Add the new slice reducer here
   },
 });
 

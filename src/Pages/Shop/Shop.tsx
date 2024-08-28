@@ -5,9 +5,16 @@ import ProductCard from "../../Components/ProductCard";
 import BackgroundImg from "../../Components/BackgroundImg";
 
 import { useEffect } from "react";
-import { fetchCategoryData } from "../../Redux/Slices/CategorySlice";
+import {
+  fetchCategoryData,
+  fetchProductsData,
+} from "../../Redux/Slices/CategorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Redux/Store/store";
+import EmptyComponent from "../../Reuseables/EmptyComponent";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { formatCurrency } from "../../utils/CurrencyFormat";
 
 // Typed hooks
 const useAppDispatch: () => AppDispatch = useDispatch;
@@ -22,22 +29,48 @@ interface subNav1 {
   status?: boolean;
   productcount?: number | String;
 }
+interface productType {
+  categoryid: String;
+  categoryname: String;
+  createdAt?: String;
+  description?: String;
+  images?: String[];
+  status?: boolean;
+  price?: number | String | any;
+  productid?: String;
+  productname?: String;
+  totalStock?: number | String;
+}
 
 function Shop() {
   const dispatch = useAppDispatch();
-  const { data, status, error } = useAppSelector((state) => state.data);
+  const {
+    categories,
+    products,
+    // categoryStatus,
+    productStatus,
+    // categoryError,
+    // productError,
+  } = useAppSelector((state) => state.data);
 
   useEffect(() => {
     dispatch(fetchCategoryData("/category/client?type=all"));
   }, [dispatch]);
 
-  console.log(data, status, error);
-  const subNav: subNav1[] = data?.categories;
+  const subNav: subNav1[] = categories;
 
-  const [tabNav, setTabNav] = useState<subNav1>(
-    data?.categories && data?.categories[0]
-  );
-  
+  const [tabNav, setTabNav] = useState<subNav1>(categories && categories[0]);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      dispatch(fetchProductsData(`/category/${tabNav?.categoryid}/products/`));
+    }
+  }, [dispatch, categories, tabNav?.categoryid]);
+
+  // console.log(categories, categories?.categories);
+
+  const priceInNaira = formatCurrency(1500);
+console.log(priceInNaira); 
 
   // const SortBy = [
   //   { value: "relevance", label: "Relevance" },
@@ -67,22 +100,24 @@ function Shop() {
           style={{ paddingTop: "8px" }}
         >
           <div className="flex gap-[1rem] s900:w-[50%] w-[70%] flex-wrap">
-            {subNav && subNav.map((e: subNav1, i: number) => (
-              <button
-                key={i}
-                onClick={() => setTabNav(e)}
-                className={
-                  "border border-gray-700 rounded-lg text-gray-600 text-[.8rem] px-[1rem] py-[.7rem] capitalize"
-                }
-                style={{
-                  background:
-                    e.categoryname === tabNav?.categoryname ? "black" : "",
-                  color: e.categoryname === tabNav?.categoryname ? "white" : "",
-                }}
-              >
-                {e.categoryname}
-              </button>
-            ))}
+            {subNav &&
+              subNav.map((e: subNav1, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => setTabNav(e)}
+                  className={
+                    "border border-gray-700 rounded-lg text-gray-600 text-[.8rem] px-[1rem] py-[.7rem] capitalize"
+                  }
+                  style={{
+                    background:
+                      e.categoryname === tabNav?.categoryname ? "black" : "",
+                    color:
+                      e.categoryname === tabNav?.categoryname ? "white" : "",
+                  }}
+                >
+                  {e.categoryname}
+                </button>
+              ))}
           </div>
           <div className="flex items-center gap-[1rem]">
             <div className="text-gray-500 text-[.95rem]">Sort by:</div>
@@ -92,10 +127,29 @@ function Shop() {
       </section>
 
       <div className="containers grid s1100:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-[1rem] py-[1rem]">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        {productStatus === "loading" ? (
+          <div className="col-span-full flex justify-center items-center">
+            <Skeleton className="w-full h-[250px] bg-black z-50" />
+          </div>
+        ) : products?.length > 0 ? (
+          products.map((e: productType, i: number) => {
+            return (
+              <div key={i}>
+                <ProductCard
+                  productName={e?.productname}
+                  description={e?.description}
+                  price={e?.price}
+                  loading={false}
+                  img={e?.images && e?.images[i]}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <div className="col-span-full flex justify-center items-center">
+            <EmptyComponent />
+          </div>
+        )}
       </div>
     </div>
   );

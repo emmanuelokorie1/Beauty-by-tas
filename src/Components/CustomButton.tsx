@@ -5,20 +5,21 @@ interface CustomButtonProps {
   loading?: boolean;
   text: string;
   classNames?: string;
+  onClick?: any;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ loading, text, classNames }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ loading, text, classNames, onClick }) => {
   return (
-    <button className={`flex items-center justify-center p-2 rounded-md ${classNames}`}>
+    <button className={`flex items-center justify-center p-2 rounded-md ${classNames}`} onClick={onClick}>
       {loading ? (
         <Oval
           visible={true}
           height={24}
           width={24}
-          color="#4fa94d"
+          color="white"
           ariaLabel="oval-loading"
           wrapperStyle={{}}
-          wrapperClass=""
+          wrapperClass="text-white"
         />
       ) : (
         text

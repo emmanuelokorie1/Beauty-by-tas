@@ -79,7 +79,7 @@ function App() {
             }
           />
           <Route
-            path="/description"
+            path="/description/:id"
             element={
               <Suspense fallback={<Loading />}>
                 <Bag />
