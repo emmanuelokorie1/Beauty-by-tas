@@ -1,10 +1,10 @@
-// src/features/categorydataSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from '../../services/axiosInstance';
+import { CategoryType, ProductType } from '../../types/commonTypes';
 
 interface DataState {
-  categories: any | null;
-  products: any | null;
+  categories: CategoryType[] | null;
+  products: ProductType[] | null;
   categoryStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   productStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   categoryError: string | null;
@@ -22,7 +22,11 @@ const initialState: DataState = {
 };
 
 // Async thunk to fetch category data
-export const fetchCategoryData = createAsyncThunk(
+export const fetchCategoryData = createAsyncThunk<
+  { categories: CategoryType[] }, // Return type
+  string, // Argument type (endpoint)
+  { rejectValue: string } // Reject value type
+>(
   'data/fetchCategoryData',
   async (endpoint: string, thunkAPI) => {
     try {
@@ -37,7 +41,11 @@ export const fetchCategoryData = createAsyncThunk(
 );
 
 // Async thunk to fetch products by category
-export const fetchProductsData = createAsyncThunk(
+export const fetchProductsData = createAsyncThunk<
+  { products: ProductType[] }, // Return type
+  string, // Argument type (endpoint)
+  { rejectValue: string } // Reject value type
+>(
   'data/fetchProductsData',
   async (endpoint: string, thunkAPI) => {
     try {
@@ -61,7 +69,7 @@ const categorydataSlice = createSlice({
       .addCase(fetchCategoryData.pending, (state) => {
         state.categoryStatus = 'loading';
       })
-      .addCase(fetchCategoryData.fulfilled, (state, action: PayloadAction<{ categories: Category[] }>) => {
+      .addCase(fetchCategoryData.fulfilled, (state, action: PayloadAction<{ categories: CategoryType[] }>) => {
         state.categoryStatus = 'succeeded';
         state.categories = action.payload.categories;
       })
@@ -74,9 +82,9 @@ const categorydataSlice = createSlice({
       .addCase(fetchProductsData.pending, (state) => {
         state.productStatus = 'loading';
       })
-      .addCase(fetchProductsData.fulfilled, (state, action: PayloadAction<{ products: Product[] }>) => {
+      .addCase(fetchProductsData.fulfilled, (state, action: PayloadAction<{ products: ProductType[] }>) => {
         state.productStatus = 'succeeded';
-        state.products = action.payload?.data;
+        state.products = action.payload.products;
       })
       .addCase(fetchProductsData.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.productStatus = 'failed';

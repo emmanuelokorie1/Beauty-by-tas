@@ -22,9 +22,13 @@ const initialState: DataState = {
 };
 
 // Async thunk to post sign-up data
-export const PostSignUpData = createAsyncThunk(
+export const PostSignUpData = createAsyncThunk<
+  any, // Return type
+  { endpoint: string; data: any }, // Argument type
+  { rejectValue: string } // Reject value type
+>(
   "auth/PostSignUpData",
-  async ({ endpoint, data }: { endpoint: string; data: any }, thunkAPI) => {
+  async ({ endpoint, data }, thunkAPI) => {
     try {
       const response = await axiosInstance.post(endpoint, data);
       toast.success(response?.data.message || "Signed up successfully", {
@@ -45,10 +49,14 @@ export const PostSignUpData = createAsyncThunk(
   }
 );
 
-// Async thunk to post sign-up data
-export const PostLoginData = createAsyncThunk(
+// Async thunk to post login data
+export const PostLoginData = createAsyncThunk<
+  any, // Return type
+  { endpoint: string; data: any }, // Argument type
+  { rejectValue: string } // Reject value type
+>(
   "auth/PostLoginData",
-  async ({ endpoint, data }: { endpoint: string; data: any }, thunkAPI) => {
+  async ({ endpoint, data }, thunkAPI) => {
     try {
       const response = await axiosInstance.post(endpoint, data);
       toast.success(response?.data.message || "Logged in successfully", {
@@ -80,20 +88,14 @@ const authDataSlice = createSlice({
       .addCase(PostSignUpData.pending, (state) => {
         state.signUpStatus = "loading";
       })
-      .addCase(
-        PostSignUpData.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.signUpStatus = "succeeded";
-          state.signUp = action.payload;
-        }
-      )
-      .addCase(
-        PostSignUpData.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.signUpStatus = "failed";
-          state.signUpError = action.payload || "Failed to post sign-up data";
-        }
-      )
+      .addCase(PostSignUpData.fulfilled, (state, action: PayloadAction<any>) => {
+        state.signUpStatus = "succeeded";
+        state.signUp = action.payload;
+      })
+      .addCase(PostSignUpData.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.signUpStatus = "failed";
+        state.signUpError = action.payload || "Failed to post sign-up data";
+      })
 
       // Handle login data post
       .addCase(PostLoginData.pending, (state) => {
@@ -103,13 +105,10 @@ const authDataSlice = createSlice({
         state.logintatus = "succeeded";
         state.login = action.payload;
       })
-      .addCase(
-        PostLoginData.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.logintatus = "failed";
-          state.loginError = action.payload || "Failed to post sign-up data";
-        }
-      );
+      .addCase(PostLoginData.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.logintatus = "failed";
+        state.loginError = action.payload || "Failed to post login data";
+      });
   },
 });
 

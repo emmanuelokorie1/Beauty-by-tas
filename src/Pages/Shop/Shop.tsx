@@ -14,33 +14,13 @@ import { AppDispatch, RootState } from "../../Redux/Store/store";
 import EmptyComponent from "../../Reuseables/EmptyComponent";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { formatCurrency } from "../../utils/CurrencyFormat";
+import { CategoryType, ProductType } from "../../types/commonTypes";
 
 // Typed hooks
 const useAppDispatch: () => AppDispatch = useDispatch;
 const useAppSelector: <TSelected>(
   selector: (state: RootState) => TSelected
 ) => TSelected = useSelector;
-
-interface subNav1 {
-  categoryname: String;
-  categoryid: String;
-  createdat?: String;
-  status?: boolean;
-  productcount?: number | String;
-}
-interface productType {
-  categoryid: String;
-  categoryname: String;
-  createdAt?: String;
-  description?: String;
-  images?: String[];
-  status?: boolean;
-  price?: number | String | any;
-  productid?: String;
-  productname?: String;
-  totalStock?: number | String;
-}
 
 function Shop() {
   const dispatch = useAppDispatch();
@@ -52,25 +32,21 @@ function Shop() {
     // categoryError,
     // productError,
   } = useAppSelector((state) => state.data);
+  
 
   useEffect(() => {
     dispatch(fetchCategoryData("/category/client?type=all"));
   }, [dispatch]);
 
-  const subNav: subNav1[] = categories;
+  const subNav: CategoryType[] = categories;
 
-  const [tabNav, setTabNav] = useState<subNav1>(categories && categories[0]);
+  const [tabNav, setTabNav] = useState<CategoryType>(categories && categories[0]);
 
   useEffect(() => {
     if (categories && categories.length > 0) {
       dispatch(fetchProductsData(`/category/${tabNav?.categoryid}/products/`));
     }
   }, [dispatch, categories, tabNav?.categoryid]);
-
-  // console.log(categories, categories?.categories);
-
-  const priceInNaira = formatCurrency(1500);
-console.log(priceInNaira); 
 
   // const SortBy = [
   //   { value: "relevance", label: "Relevance" },
@@ -101,7 +77,7 @@ console.log(priceInNaira);
         >
           <div className="flex gap-[1rem] s900:w-[50%] w-[70%] flex-wrap">
             {subNav &&
-              subNav.map((e: subNav1, i: number) => (
+              subNav.map((e: CategoryType, i: number) => (
                 <button
                   key={i}
                   onClick={() => setTabNav(e)}
@@ -132,7 +108,7 @@ console.log(priceInNaira);
             <Skeleton className="w-full h-[250px] bg-black z-50" />
           </div>
         ) : products?.length > 0 ? (
-          products.map((e: productType, i: number) => {
+          products.map((e: ProductType, i: number) => {
             return (
               <div key={i}>
                 <ProductCard
