@@ -9,6 +9,7 @@ import policy from "../assets/ProductDescription/return.svg";
 import { GoHeart } from "react-icons/go";
 import StarReview from "./StarReview";
 import CustomButton from "./CustomButton";
+import { formatCurrency } from "../utils/CurrencyFormat";
 
 interface CustomReactProps {}
 
@@ -31,15 +32,15 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
 
   return (
     <>
-      <section className="flex justify-between containers pt-[2rem]">
-        <aside className="flex justify-between w-[50%] h-fit ">
+      <section className="md:flex justify-between containers pt-[2rem]">
+        <aside className="flex pb-[2rem] justify-between md:w-[50%] w-[100%] h-fit ">
           {/* Number{productId} */}
           <div className="w-[15%]">
             {imgNav?.map((e, i) => {
               return (
                 <div
                   key={i}
-                  className="p-[.7rem] w-[80px] h-[80px] rounded-md cursor-pointer m-[.3rem]"
+                  className="p-[.7rem] sm:w-[80px] w-[60px] sm:h-[80px] h-[60px] rounded-md cursor-pointer m-[.3rem]"
                   style={{
                     border:
                       e === imgNavTab
@@ -55,7 +56,7 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
           </div>
 
           <div className="p-[.7rem] w-[75%] flex justify-center items-center">
-            <div className="w-[230px] h-[230px] flex justify-center items-center transition-all">
+            <div className="s900:w-[230px] w-[200px] s900:h-[230px] h-[200px] flex justify-center items-center transition-all">
               <img
                 src={imgNavTab}
                 alt="logo"
@@ -74,7 +75,7 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
             </div>
           </div>
         </aside>
-        <aside className="ps-[1rem] w-[50%]">
+        <aside className="ps-[1rem] md:w-[50%] w-[100%] ">
           <div className="bg-primary-textColor w-fit text-white px-[.5rem] text-[.9rem] transition-all rounded-lg">
             NEW
           </div>
@@ -85,14 +86,14 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
             Body Care
           </div>
 
-          <div className="font-serif text-[1.2rem] text-[#000914]">
+          <div className="fontdm sm:text-[1.2rem] text-[1rem] text-[#000914]">
             Plum Bodylovin Vanilla Vibes Body Butter - (25g)
           </div>
 
           <StarReview review={3.7} />
 
           <div
-            className="text-[14px] text-primary-textColor2 py-[10px]"
+            className="sm:text-[14px] text-[13px] text-primary-textColor2 py-[10px]"
             style={{ fontWeight: "400" }}
           >
             Protect your skin from dry weather with the Plum Bodylovin Vanilla
@@ -100,9 +101,9 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
           </div>
 
           <div className="flex gap-[.7rem] text-[.88rem] py-[.5rem]">
-            <div className=" font-semibold">${amount * productCount}</div>
+            <div className=" font-semibold">{formatCurrency(amount * productCount)}</div>
             <div className="line-through decoration-1 text-gray-400">
-              $35.00
+              {formatCurrency(35)}
             </div>
             <div className="text-red-500">(29% off)</div>
           </div>
@@ -144,7 +145,7 @@ const ProductDecriptions: React.FC<CustomReactProps> = ({}) => {
                   <div>
                     <img src={e?.img} alt="logo" width={30} height={30} />
                   </div>
-                  <div className="pt-3 text-[#313131] text-[14px]">
+                  <div className="pt-3 text-[#313131] text-center sm:text-[14px] text-[12px]">
                     {e?.name}
                   </div>
                 </div>

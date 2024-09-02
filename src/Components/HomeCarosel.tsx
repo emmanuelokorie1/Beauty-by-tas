@@ -42,7 +42,7 @@ function HomeCarosel() {
           <div key={index} className="flex items-center h-full">
             <div className="md:py-1 py-[1rem] md:flex justify-between items-center w-full">
               <div className="md:w-[45%] w-full lg:ps-[6rem] s900:ps-[4rem] sm:ps-[2rem] md:pe-0 px-[1rem]">
-                <div className="s1100:text-[3.6rem] s900:text-[2.8rem] md:text-[2.5rem] sm:text-[2rem] text-[1.6rem] font-bold text-primary-textColor font-serif">
+                <div className="s1100:text-[3rem] xl:text-[3.6rem] s900:text-[2.8rem] md:text-[2.5rem] sm:text-[2rem] text-[1.6rem] font-bold text-primary-textColor font-serif">
                   {e?.headerTag}
                 </div>
                 <div className="md:py-[1.5rem] py-[1rem] md:text-[1rem] text-[.9rem]">

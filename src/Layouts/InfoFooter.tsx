@@ -38,10 +38,10 @@ function InfoFooter() {
 
   return (
     <div className="pb-[1rem] pxMedia bg-primary-background flex flex-wrap justify-between items-center w-[100%] ">
-      <aside className="s900:w-[50%] w-[100%] pe-[2rem]">
+      <aside className="s900:w-[50%] w-[100%] s900:pe-[2rem]">
         <div className="border-b-[1px] border-gray-300">
           <div className="w-fit">
-            <NavLink to="/" className="w-fit bg-[red]">
+            <NavLink to="/" className="w-fit ">
               <img src={logo} alt="logo" width={100} />
             </NavLink>
           </div>

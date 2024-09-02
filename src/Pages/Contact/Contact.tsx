@@ -9,8 +9,8 @@ function Contact() {
   const [isChecked, setIsChecked] = useState(false);
   return (
     <>
-      <section className="grid grid-cols-2 containers py-[3rem]">
-        <aside className="ps-[4rem]">
+      <section className="grid md:grid-cols-2 grid-cols-1 containers py-[3rem]">
+        <aside className="md:ps-[1rem] s900:ps-[2rem] xl:ps-[4rem]">
           <div className="text-center">
             <div className="fontdm text-[2rem]">Get in touch</div>
             <div className="text-[1rem] text-gray-600">
@@ -84,7 +84,7 @@ function Contact() {
             </div>
           </div>
         </aside>
-        <aside className="flex justify-center items-center">
+        <aside className="md:flex justify-center items-center hidden">
           <div className="w-[500px]">
             <img src={image} alt="" className="w-[100%]" />
           </div>

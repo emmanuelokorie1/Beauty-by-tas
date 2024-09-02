@@ -27,13 +27,13 @@ function Bag() {
       <ProductDecriptions />
       <section className="mt-[6rem] containers">
         <div>
-          <div className="flex justify-evenly px-[3rem] border-b ">
+          <div className="flex md:justify-evenly justify-between flex-wrap md:px-[3rem] border-b ">
             {tabNav?.map((e, i) => {
               return (
                 <div
                   onClick={() => setTabNavState(e)}
                   key={i}
-                  className={`cursor-pointer px-[.5rem] text-[.9rem] transition-all py-[.5rem] ${
+                  className={`cursor-pointer px-[.5rem] md:text-[.9rem] text-[.8rem] transition-all py-[.5rem] ${
                     e === tabNavState
                       ? "border-b-[2px] border-primary-deepRed text-primary-deepRed font-semibold"
                       : "text-primary-textColor2 border-b-[2px] border-transparent"

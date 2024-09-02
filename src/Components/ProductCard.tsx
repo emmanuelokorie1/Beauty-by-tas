@@ -55,14 +55,12 @@ const ProductCard: React.FC<customProps> = ({
           <Skeleton containerClassName="w-[100%] h-[30px] rounded-lg" />
         </div>
       ) : (
-        <Link to={`/description/${id}`}>
-          {" "}
-          <div
-            className={`w-[${
-              width || "24%"
-            }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all`}
-          >
-            <div className="flex items-center justify-between">
+        <div
+          className={`w-[${
+            width || "24%"
+          }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all`}
+        >
+          <div className="flex items-center justify-between">
               <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] transition-all rounded-lg">
                 NEW
               </div>
@@ -73,6 +71,9 @@ const ProductCard: React.FC<customProps> = ({
                 />
               </div>
             </div>
+            
+          <Link to={`/description/${id || 1}`}>
+            
 
             <div className="flex justify-center items-center  py-2">
               <div className=" py-2 h-[250px] w-full">
@@ -100,10 +101,10 @@ const ProductCard: React.FC<customProps> = ({
             </div>
             <div className="flex gap-[.7rem] text-[.88rem] py-[.5rem]">
               <div className=" font-semibold">
-                {formatCurrency(price || "10,000")}
+                {formatCurrency(price || 10000)}
               </div>
               <div className="line-through decoration-1 text-gray-400">
-                {formatCurrency(35.0)}
+                {formatCurrency(35)}
               </div>
               <div className="text-red-500">(29% off)</div>
             </div>
@@ -115,16 +116,16 @@ const ProductCard: React.FC<customProps> = ({
                 <GoDotFill size={15} className="text-red-500" /> <div>Rose</div>
               </div>
             </div>
+          </Link>
 
-            <div className="mt-[1rem]">
-              {" "}
-              <CustomButton
-                text={"Add to Bag"}
-                classNames="hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem]"
-              />
-            </div>
+          <div className="mt-[1rem]">
+            {" "}
+            <CustomButton
+              text={"Add to Bag"}
+              classNames="hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem]"
+            />
           </div>
-        </Link>
+        </div>
       )}
     </>
   );
