@@ -35,7 +35,7 @@ function Login() {
   };
   return (
     <div className="">
-      <div className="fontdm sm:text-[1.7rem] text-[1.4rem] text-center"> Let’s get you signed in.</div>
+      <div className="fontdm sm:text-[1.7rem] text-[1.4rem] text-center"> Let's get you signed in.</div>
       <div>
         <InputLabel
           type={"email"}

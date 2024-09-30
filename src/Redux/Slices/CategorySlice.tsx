@@ -50,7 +50,9 @@ export const fetchProductsData = createAsyncThunk<
   async (endpoint: string, thunkAPI) => {
     try {
       const response = await axiosInstance.get(endpoint);
-      return response.data;
+      console.log(response?.data?.data);
+      
+      return { products: response.data?.data || [] };
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || 'Failed to fetch products';

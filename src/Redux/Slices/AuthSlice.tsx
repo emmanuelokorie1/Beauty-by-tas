@@ -21,6 +21,8 @@ const initialState: DataState = {
   loginError: null,
 };
 
+const cartItems = JSON.parse(localStorage?.getItem('cartItems'))
+
 // Async thunk to post sign-up data
 export const PostSignUpData = createAsyncThunk<
   any, // Return type
@@ -63,7 +65,11 @@ export const PostLoginData = createAsyncThunk<
         className: "text-green-500 font-semibold",
       });
       sessionStorage.setItem("userDetails", JSON.stringify(response.data));
-      window.location.assign('/');
+      if (cartItems && cartItems.length > 0) {
+        window.location.assign('/cart');
+      }else{
+        window.location.assign('/');
+      }
       return response.data;
     } catch (error: any) {
       const errorMessage =

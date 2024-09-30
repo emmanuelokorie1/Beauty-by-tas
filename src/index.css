@@ -130,6 +130,10 @@ body {
   font-family: displayRegular;
 }
 
+.boldRebuk {
+  font-family: boldRebuk;
+}
+
 .pxMedia {
   @apply s900:px-px md:px-[3rem] sm:px-[2rem] px-[1rem]
 }
@@ -185,6 +189,14 @@ body {
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+.arco-btn-primary:not(.arco-btn-disabled) {
+  background-color: #FF779F !important;
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+
 
 @media screen and (min-width: 1500px) {
   body {

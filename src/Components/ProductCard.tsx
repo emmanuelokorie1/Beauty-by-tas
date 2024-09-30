@@ -1,5 +1,4 @@
-"use client";
-import React from "react";
+import React, { useState } from "react";
 import { GoHeart } from "react-icons/go";
 import productImg from "../assets/product.png";
 import { GoDotFill } from "react-icons/go";
@@ -19,6 +18,7 @@ interface customProps {
   productName?: String;
   price?: number | String;
   id?: String;
+  onClick?: () => void;
 }
 
 const ProductCard: React.FC<customProps> = ({
@@ -31,7 +31,9 @@ const ProductCard: React.FC<customProps> = ({
   productName,
   price,
   id,
+  onClick,
 }) => {
+
   return (
     <>
       {loading ? (
@@ -61,20 +63,18 @@ const ProductCard: React.FC<customProps> = ({
           }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all`}
         >
           <div className="flex items-center justify-between">
-              <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] transition-all rounded-lg">
-                NEW
-              </div>
-              <div className="cursor-pointer text-primary-textColor">
-                <GoHeart
-                  className="hover:text-[red] transition-all-3s"
-                  size={30}
-                />
-              </div>
+            <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] transition-all rounded-lg">
+              NEW
             </div>
-            
-          <Link to={`/description/${id || 1}`}>
-            
+            <div className="cursor-pointer text-primary-textColor">
+              <GoHeart
+                className="hover:text-[red] transition-all-3s"
+                size={30}
+              />
+            </div>
+          </div>
 
+          <Link to={`/description/${id || 1}`}>
             <div className="flex justify-center items-center  py-2">
               <div className=" py-2 h-[250px] w-full">
                 <img
@@ -121,6 +121,7 @@ const ProductCard: React.FC<customProps> = ({
           <div className="mt-[1rem]">
             {" "}
             <CustomButton
+            onClick={onClick}
               text={"Add to Bag"}
               classNames="hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem]"
             />

@@ -15,6 +15,9 @@ import EmptyComponent from "../../Reuseables/EmptyComponent";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { CategoryType, ProductType } from "../../types/commonTypes";
+import { toast } from "sonner";
+import { addToCart } from "../../Redux/Slices/CartSlice";
+import { Modal } from "@arco-design/web-react";
 
 // Typed hooks
 const useAppDispatch: () => AppDispatch = useDispatch;
@@ -32,7 +35,6 @@ function Shop() {
     // categoryError,
     // productError,
   } = useAppSelector((state) => state.data);
-  
 
   useEffect(() => {
     dispatch(fetchCategoryData("/category/client?type=all"));
@@ -40,7 +42,9 @@ function Shop() {
 
   const subNav: CategoryType[] = categories;
 
-  const [tabNav, setTabNav] = useState<CategoryType>(categories && categories[0]);
+  const [tabNav, setTabNav] = useState<CategoryType>(
+    categories && categories[0]
+  );
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -54,6 +58,10 @@ function Shop() {
   //   { value: "best seller", label: "Best Seller" },
   //   { value: "price low - high", label: "Price Low - High" },
   // ];
+
+  const handleAddToCart = (item) => {
+    dispatch(addToCart(item));
+  };
 
   return (
     <div>
@@ -71,6 +79,7 @@ function Shop() {
         </div>
 
         <div className="text-black">Our Categories</div>
+
         <section
           className="flex justify-between items-center"
           style={{ paddingTop: "8px" }}
@@ -117,6 +126,7 @@ function Shop() {
                   price={e?.price}
                   loading={false}
                   img={e?.images && e?.images[i]}
+                  onClick={() => handleAddToCart(e)}
                 />
               </div>
             );

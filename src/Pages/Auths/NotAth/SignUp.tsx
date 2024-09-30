@@ -120,7 +120,7 @@ function SignUp() {
       <div className="border-t ">
         <AuthNavText
           text={"Already have an account?"}
-          linkText={"Sign In!"}
+          linkText={"Login!"}
           link={"/auth/login"}
         />
       </div>

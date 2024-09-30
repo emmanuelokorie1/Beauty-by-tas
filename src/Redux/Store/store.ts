@@ -2,11 +2,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import categorydataReducer from '../Slices/CategorySlice';
 import authDataReducer from '../Slices/AuthSlice';
+import cartReducer from '../Slices/CartSlice';
+import checkoutReducer from '../Slices/CheckOutSlice';
 
 const store = configureStore({
   reducer: {
     data: categorydataReducer,
-    auth: authDataReducer, // Add the new slice reducer here
+    auth: authDataReducer, 
+    cart: cartReducer,
+    checkout: checkoutReducer,
   },
 });
 

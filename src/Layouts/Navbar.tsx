@@ -4,6 +4,9 @@ import { GoHeart } from "react-icons/go";
 import { NavLink } from "react-router-dom";
 import { LuSearch } from "react-icons/lu";
 import { IoBagHandleOutline } from "react-icons/io5";
+import { Badge } from "@arco-design/web-react";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 function Navbar() {
   const routes = [
@@ -14,6 +17,15 @@ function Navbar() {
   ];
 
   const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
+
+  const [cartCount, setCartCount] = useState<number>(0);
+  const carts = useSelector((state: any) => state.cart.carts);
+
+  // Update cart count when localStorage changes or Redux state changes
+  useEffect(() => {
+    const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+    setCartCount(cartItems.length); // Update the cart count from localStorage
+  }, [carts]); // Re-run the effect when `carts` state in Redux changes
 
   return (
     <section className="flex justify-between w-full py-3 md:py-0 md:bg-primary-background bg-white z-[999] md:px-[2rem] px-[1rem] sticky top-0 border-b-[1px] border-gray-200">
@@ -61,7 +73,9 @@ function Navbar() {
             className="cursor-pointer text-gray-700  text-[1.8rem]"
           >
             {/* md:text-[2.3rem] sm:text-[2.1rem]  */}
-            <IoBagHandleOutline />
+            <Badge count={cartCount}>
+              <IoBagHandleOutline />
+            </Badge>
           </NavLink>
         </div>
       </aside>
