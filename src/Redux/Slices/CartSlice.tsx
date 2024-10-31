@@ -1,4 +1,3 @@
-// cartSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ProductType } from '../../types/commonTypes'; // Make sure to have this type defined
 
@@ -43,6 +42,7 @@ const cartSlice = createSlice({
       );
       // Update localStorage
       localStorage.setItem('cartItems', JSON.stringify(state.carts));
+      console.log("🚀 ~ JSON.stringify(state.carts):", JSON.stringify(state.carts))
     },
     decrementCount: (state, action: PayloadAction<string>) => {
       state.carts = state.carts.map(cartItem =>
@@ -58,11 +58,18 @@ const cartSlice = createSlice({
       // Update localStorage
       localStorage.setItem('cartItems', JSON.stringify(state.carts));
     },
+
+    // Add the getRecentCart reducer
+    getRecentCart: (state, action: PayloadAction<number>) => {
+      // Return the last 'N' items in the cart (based on the payload)
+      const recentItems = state.carts.slice(-action.payload);
+      return { ...state, carts: recentItems }; // Return the recent carts
+    }
   },
 });
 
 // Export actions
-export const { addToCart, incrementCount, decrementCount, removeFromCart } = cartSlice.actions;
+export const { addToCart, incrementCount, decrementCount, removeFromCart, getRecentCart } = cartSlice.actions;
 
 // Export reducer
 export default cartSlice.reducer;

@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductDecriptions from "../../Components/ProductDecriptions";
 import HeaderText from "../../Components/HeaderText";
 import ProductSwipper from "../../Components/ProductSwipper";
 import ProductCard from "../../Components/ProductCard";
 
+
 function Bag() {
+  // Extract the id from the URL using useParams at the top level
+// Dependency array includes 'id' to trigger useEffect when it changes
+
   const CardData = [
     <ProductCard width="100%" />,
     <ProductCard width="100%" />,
@@ -21,7 +25,9 @@ function Bag() {
     "BENEFITS",
     "SUSTAINABLE PACKAGING",
   ];
+
   const [tabNavState, setTabNavState] = useState("OVERVIEW");
+
   return (
     <div>
       <ProductDecriptions />
