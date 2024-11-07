@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 
 interface customProps {
-  linkText: String;
+  linkText: string;
   link: any;
-  text: String;
+  text: string;
 }
 
 const AuthNavText: React.FC<customProps> = ({ link, linkText, text }) => {

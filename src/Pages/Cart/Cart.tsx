@@ -220,6 +220,7 @@ function Cart() {
               <div className="font-bold">Calculated at checkout</div>
             </div>
           </div>
+          
 
           <div className="flex justify-between py-[.8rem]">
             <div className="font-bold">Total Amount (USD)</div>

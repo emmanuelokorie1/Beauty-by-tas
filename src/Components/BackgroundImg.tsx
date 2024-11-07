@@ -1,8 +1,8 @@
 interface customProps {
   img?: any;
-  header?: String;
-  text?: String;
-  text1?: String;
+  header?: string;
+  text?: string;
+  text1?: string;
   check?: boolean;
 }
 
