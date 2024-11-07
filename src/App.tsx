@@ -24,6 +24,7 @@ const Home = lazy(() => import("./Pages/Home/Home"));
 const NotLoggedIn = lazy(() => import("./Pages/Auths/NotAth/NotLoggedIn"));
 const Contact = lazy(() => import("./Pages/Contact/Contact"));
 const Profile = lazy(() => import("./Pages/Auths/Profiles/Profile"));
+const Confirmation = lazy(() => import("./Pages/Confirmation/Confirmation"));
 // const Career = lazy(() => import("./Pages/Career/Career"));
 // const News = lazy(() => import("./Pages/News/News"));
 // const WhoAreWe = lazy(() => import("./Pages/About/matrix/WhoAreWe"));
@@ -99,6 +100,14 @@ function App() {
             element={
               <Suspense fallback={<Loading />}>
                 <Profile />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/confirmation"
+            element={
+              <Suspense fallback={<Loading />}>
+                <Confirmation />
               </Suspense>
             }
           />

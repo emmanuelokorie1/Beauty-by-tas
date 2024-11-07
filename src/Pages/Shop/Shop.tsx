@@ -121,6 +121,7 @@ function Shop() {
             return (
               <div key={i}>
                 <ProductCard
+                id={e?.productid}
                   productName={e?.productname}
                   description={e?.description}
                   price={e?.price}
