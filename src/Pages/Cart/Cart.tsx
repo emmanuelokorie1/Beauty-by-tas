@@ -223,7 +223,7 @@ function Cart() {
           </div>
 
           <div className="flex justify-between py-[.8rem]">
-            <div className="font-bold">Total Amount (USD)</div>
+            <div className="font-bold">{`Total Amount (USD)`}</div>
             <div className="font-bold">${totalAmount.toFixed(2)}</div>
           </div>
 

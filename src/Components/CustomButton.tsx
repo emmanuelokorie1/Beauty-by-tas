@@ -3,9 +3,9 @@ import { Oval } from 'react-loader-spinner';
 
 interface CustomButtonProps {
   loading?: boolean;
-  text: string;
+  text?: string;
   classNames?: string;
-  onClick: () => void;
+  onClick?: () => void;
   icon?: React.ReactNode; // Add this line
 }
 
