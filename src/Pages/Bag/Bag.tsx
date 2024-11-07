@@ -54,7 +54,7 @@ function Bag() {
       </section>
 
       <section className="containers py-[2rem]">
-        <HeaderText text="Similar Products" />
+        <HeaderText title="Similar Products" />
         <ProductSwipper data={CardData} />
       </section>
     </div>

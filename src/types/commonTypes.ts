@@ -1,21 +1,35 @@
 export interface CategoryType {
-  categoryname: String;
-  categoryid: String;
-  createdat?: String;
+  categoryname: string;
+  categoryid: string;
+  createdat?: string;
   status?: boolean;
-  productcount?: number | String;
+  productcount?: number | string;
 }
 
 export interface ProductType {
-  categoryid: String;
-  categoryname: String;
-  createdAt?: String;
-  description?: String;
-  images?: String[] | any;
+  categoryid: string;
+  categoryname: string;
+  createdAt?: string;
+  description?: string;
+  images?: string[] | any;
   status?: boolean;
-  price?: number | String | any;
-  productid?: String;
-  productname?: String;
-  totalStock?: number | String;
+  price?: number | string | any;
+  productid?: string;
+  productname?: string;
+  totalStock?: number | string;
   count?: number;
+}
+
+export interface UserDetails {
+  user?: {
+    email: string;
+    name: string;
+  };
+}
+
+export interface LocationDetails {
+  address: string;
+  state: string;
+  city: string;
+  country: string;
 }

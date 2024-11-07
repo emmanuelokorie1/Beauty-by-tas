@@ -109,11 +109,11 @@ function Home() {
             ritual.
           </div>
         </div>
-        <HeaderText text="Shop our Bestsellers" />
+        <HeaderText title="Shop our Bestsellers" />
         <ProductSwipper data={CardData} />
 
         <div className=" pt-[2rem]">
-          <HeaderText text="Our Best-Selling Sets" />
+          <HeaderText title="Our Best-Selling Sets" />
 
           <div className="flex justify-between flex-nowrap items-center md:gap-4 gap-2 mt-[1rem] overflow-x-scroll custom-scrollbar  mb-[2rem]">
             {bestSeller?.map((e, index) => {
@@ -166,7 +166,7 @@ function Home() {
       </section>
 
       <section className="containers pt-[2rem] pb-[1rem]">
-        <HeaderText text="Explore our collection" />
+        <HeaderText title="Explore our collection" />
         <aside className="grid md:grid-cols-4 grid-cols-2 md:gap-[2rem] gap-[1rem] py-[2rem]">
           {ExploreData?.map((item, index) => {
             return (
@@ -183,7 +183,7 @@ function Home() {
       </section>
 
       <section className="containers pb-[2rem]">
-        <HeaderText text="Shop the look" />
+        <HeaderText title="Shop the look" />
         <div className="s1100:flex justify-between items-center ">
           <aside className="s1100:w-[40%] w-[100%] s1100:block flex justify-center">
             {" "}
