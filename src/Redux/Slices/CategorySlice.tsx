@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axiosInstance from '../../services/axiosInstance';
 import { CategoryType, ProductType } from '../../types/commonTypes';
+import axiosInstance from '../../services/axiosInstance';
 
 interface DataState {
   categories: CategoryType[] | null;

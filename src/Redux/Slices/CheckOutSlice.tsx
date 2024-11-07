@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosInstance from "../../services/axiosInstance";
 import { toast } from "sonner";
+import axiosInstance from "../../services/axiosInstance";
 
 // Define the type for the response data if known
 interface CheckoutResponse {

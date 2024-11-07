@@ -10,7 +10,7 @@ import StarReview from "./StarReview";
 import CustomButton from "./CustomButton";
 import { formatCurrency } from "../utils/CurrencyFormat";
 import { useParams } from 'react-router-dom';
-import axiosInstance from '../services/axiosinstance';
+import axiosInstance from "../services/axiosInstance";
 
 interface CustomReactProps {}
 

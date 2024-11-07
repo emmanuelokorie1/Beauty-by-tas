@@ -38,14 +38,14 @@ function Cart() {
     setCartItems(storedItems);
 
     const initialQuantities: { [key: string]: number } = storedItems.reduce(
-      (acc, item) => {
+      (acc: { [key: string]: number }, item) => {
         acc[item.productid] = 1; // Set initial quantity to 1
         return acc;
       },
-      {}
+      {} // Initial empty object for the accumulator
     );
     setQuantities(initialQuantities);
-  }, []);
+  }, []); // Only run once when the component mounts
 
   useEffect(() => {
     const newTotalAmount = cartItems.reduce(
@@ -94,7 +94,7 @@ function Cart() {
 
   const data2 = cartItems.map((item) => (
     <ProductCard
-      key={item.productid}
+      // key={item.productid}
       id={item.productid}
       description={item.description}
       productName={item.categoryname}
@@ -220,7 +220,6 @@ function Cart() {
               <div className="font-bold">Calculated at checkout</div>
             </div>
           </div>
-          
 
           <div className="flex justify-between py-[.8rem]">
             <div className="font-bold">Total Amount (USD)</div>
