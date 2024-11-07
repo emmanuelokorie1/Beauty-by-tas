@@ -6,13 +6,12 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": false,  // Emit JavaScript files
     "jsx": "react-jsx",
-    "strict": false,  // Disable strict mode
-    "noEmitOnError": false  // Allow emitting even if there are errors
+    "strict": false,
+    "noEmitOnError": false
   },
   "include": ["src"]
 }
