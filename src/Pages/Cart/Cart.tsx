@@ -44,6 +44,7 @@ function Cart() {
       },
       {} // Initial empty object for the accumulator
     );
+
     setQuantities(initialQuantities);
   }, []); // Only run once when the component mounts
 

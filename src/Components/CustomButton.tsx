@@ -5,7 +5,8 @@ interface CustomButtonProps {
   loading?: boolean;
   text: string;
   classNames?: string;
-  onClick?: any;
+  onClick: () => void;
+  icon?: React.ReactNode; // Add this line
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({ loading, text, classNames, onClick }) => {
