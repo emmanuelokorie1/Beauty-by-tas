@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import "@arco-design/web-react/dist/css/arco.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Provider } from "react-redux";
@@ -10,6 +9,7 @@ import store from "./Redux/Store/store.ts";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ConfigProvider } from "@arco-design/web-react";
 import enUS from "@arco-design/web-react/es/locale/en-US";
+import "@arco-design/web-react/dist/css/arco.css";
 import { Toaster } from "sonner";
 
 AOS.init({

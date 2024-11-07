@@ -27,7 +27,6 @@ export const PostCheckOut = createAsyncThunk<
       className: "text-green-500 font-semibold",
     });
      window.location.assign(response.data?.data?.authorization_url)
-     console.log(response.data);
      
     return response.data;
   } catch (error: any) {
