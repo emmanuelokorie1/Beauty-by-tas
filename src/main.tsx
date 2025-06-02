@@ -1,16 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Provider } from "react-redux";
-import store from "./Redux/Store/store.ts";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ConfigProvider } from "@arco-design/web-react";
 import enUS from "@arco-design/web-react/es/locale/en-US";
 import "@arco-design/web-react/dist/css/arco.css";
 import { Toaster } from "sonner";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import App from "./App";
+import { queryClient } from "./lib/queryClient";
 
 AOS.init({
   // Global settings:
@@ -35,11 +36,12 @@ AOS.init({
 
 createRoot(document.getElementById("root")!).render(
   <ConfigProvider locale={enUS}>
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <StrictMode>
-      <Toaster position="top-right" />
+        <Toaster position="top-right" />
         <App />
+        <ReactQueryDevtools initialIsOpen={false} />
       </StrictMode>
-    </Provider>
+    </QueryClientProvider>
   </ConfigProvider>
 );

@@ -1,22 +1,27 @@
-import React from "react";
-import { GoHeart, GoDotFill } from "react-icons/go";
-import productImg from "../assets/product.png";
-import CustomButton from "./CustomButton";
-import Skeleton from "react-loading-skeleton";
-import { formatCurrency } from "../utils/CurrencyFormat";
-import { Link } from "react-router-dom";
+"use client"
+
+import type React from "react"
+import { GoHeart, GoDotFill } from "react-icons/go"
+import productImg from "../assets/product.png"
+import CustomButton from "./CustomButton"
+import Skeleton from "react-loading-skeleton"
+import { formatCurrency } from "../utils/CurrencyFormat"
+import { Link, useNavigate } from "react-router-dom"
+import { useCart } from "../hooks/useCart"
+import { useAuth } from "../hooks/useAuth"
+import { toast } from "sonner"
 
 interface CustomProps {
-  classContainer?: string;
-  classLoading?: string;
-  width?: string;
-  img?: string;
-  loading?: boolean;
-  description?: string;
-  productName?: string;
-  price?: number | string;
-  id?: string;
-  onClick?: () => void;
+  classContainer?: string
+  classLoading?: string
+  width?: string
+  img?: string
+  loading?: boolean
+  description?: string
+  productName?: string
+  price?: number | string
+  id?: string
+  onClick?: () => void
 }
 
 const ProductCard: React.FC<CustomProps> = ({
@@ -31,6 +36,25 @@ const ProductCard: React.FC<CustomProps> = ({
   id,
   onClick,
 }) => {
+  const { addToCart, isAddingToCart } = useCart()
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to add items to cart")
+      navigate("/auth/login")
+      return
+    }
+
+    if (id) {
+      addToCart(id, 1)
+    }
+    if (onClick) {
+      onClick()
+    }
+  }
+
   return (
     <>
       {loading ? (
@@ -53,9 +77,7 @@ const ProductCard: React.FC<CustomProps> = ({
           }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all`}
         >
           <div className="flex items-center justify-between">
-            <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] rounded-lg">
-              NEW
-            </div>
+            <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] rounded-lg">NEW</div>
             <div className="cursor-pointer text-primary-textColor">
               <GoHeart className="hover:text-[red] transition-all-3s" size={30} />
             </div>
@@ -64,11 +86,7 @@ const ProductCard: React.FC<CustomProps> = ({
           <Link to={`/description/${id || 1}`}>
             <div className="flex justify-center items-center py-2">
               <div className="py-2 h-[250px] w-full">
-                <img
-                  src={img || productImg}
-                  alt="Product"
-                  className="w-full h-full object-contain"
-                />
+                <img src={img || productImg} alt="Product" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -99,15 +117,16 @@ const ProductCard: React.FC<CustomProps> = ({
 
           <div className="mt-[1rem]">
             <CustomButton
-              onClick={onClick}
-              text="Add to Bag"
+              onClick={handleAddToCart}
+              loading={isAddingToCart}
+              text={isAuthenticated ? "Add to Bag" : "Login to Add"}
               classNames="hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem]"
             />
           </div>
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard

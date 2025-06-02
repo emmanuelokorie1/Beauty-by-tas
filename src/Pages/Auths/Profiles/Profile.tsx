@@ -1,25 +1,31 @@
-import { useState } from "react";
-import BackgroundImg from "../../../Components/BackgroundImg";
-import backImg from "../../../assets/auth/AuthImg.svg";
-import UserDetails from "./UserDetails";
-import { Link } from "react-router-dom";
+"use client"
 
-interface customProps {}
+import type React from "react"
+
+import { useState } from "react"
+import BackgroundImg from "../../../Components/BackgroundImg"
+import backImg from "../../../assets/auth/AuthImg.svg"
+import UserDetails from "./UserDetails"
+import { useAuth } from "../../../hooks/useAuth"
+
+type customProps = {}
 const Profile: React.FC<customProps> = ({}) => {
-  const tabs: string[] = ["Account Details", "My Orders", "My Wishlist"];
+  const tabs: string[] = ["Account Details", "My Orders", "My Wishlist"]
+  const [tabValue, setTabValue] = useState("Account Details")
+  const { logout } = useAuth()
 
-  const [tabValue, setTabValue] = useState("Account Details");
+  const handleLogout = () => {
+    logout()
+  }
+
   return (
     <div>
-      <BackgroundImg
-        img={backImg}
-        header={tabValue}
-        check={true}
-        text1={"WELCOME TO YOUR ACCOUNT"}
-      />
-      
+      <BackgroundImg img={backImg} header={tabValue} check={true} text1={"WELCOME TO YOUR ACCOUNT"} />
+
       <div className="containers text-end py-[1.5rem]">
-        <Link to={'/auth/login'} className="linkBtn">SIGN OUT</Link>
+        <button onClick={handleLogout} className="linkBtn">
+          SIGN OUT
+        </button>
       </div>
 
       <section className="containers md:flex justify-between ">
@@ -37,7 +43,7 @@ const Profile: React.FC<customProps> = ({}) => {
               >
                 {e}
               </div>
-            );
+            )
           })}
         </aside>
         <aside className="s1100:w-[85%] md:w-[75%] w-[100%]">
@@ -45,7 +51,7 @@ const Profile: React.FC<customProps> = ({}) => {
         </aside>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

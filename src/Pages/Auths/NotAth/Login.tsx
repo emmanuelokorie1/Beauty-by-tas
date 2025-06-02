@@ -1,61 +1,40 @@
-import { Link } from "react-router-dom";
-import CustomButton from "../../../Components/CustomButton";
-import InputLabel from "../../../Components/InputLabel";
-import AuthNavText from "../../../Reuseables/AuthNavText";
+"use client"
 
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../Redux/Store/store";
-import { PostLoginData } from "../../../Redux/Slices/AuthSlice";
-import { useState } from "react";
-
-// Typed hooks
-const useAppDispatch: () => AppDispatch = useDispatch;
-const useAppSelector: <TSelected>(
-  selector: (state: RootState) => TSelected
-) => TSelected = useSelector;
+import { Link } from "react-router-dom"
+import CustomButton from "../../../Components/CustomButton"
+import InputLabel from "../../../Components/InputLabel"
+import AuthNavText from "../../../Reuseables/AuthNavText"
+import { useState } from "react"
+import { useAuth } from "../../../hooks/useAuth"
 
 function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login, isLoginLoading } = useAuth()
 
-  const dispatch = useAppDispatch();
-  const { logintatus } = useAppSelector((state) => state.auth);
+  const handleLogin = () => {
+    login({
+      email: email,
+      password: password,
+    })
+  }
 
-  const handleSignUp = () => {
-    dispatch(
-      PostLoginData({
-        endpoint: "/auth/login",
-        data: {
-          email: email,
-          password: password,
-        },
-      })
-    );
-  };
   return (
     <div className="">
-      <div className="fontdm sm:text-[1.7rem] text-[1.4rem] text-center"> Let's get you signed in.</div>
+      <div className="fontdm sm:text-[1.7rem] text-[1.4rem] text-center">Let's get you signed in.</div>
       <div>
-        <InputLabel
-          type={"email"}
-          label={"Email Address"}
-          setInputValue={setEmail}
-        />
+        <InputLabel type={"email"} label={"Email Address"} setInputValue={setEmail} />
       </div>
       <div className="py-[.5rem]">
-        <InputLabel
-          type={"password"}
-          label={"PASSWORD"}
-          setInputValuePassword={setPassword}
-        />
+        <InputLabel type={"password"} label={"PASSWORD"} setInputValuePassword={setPassword} />
       </div>
 
       <div className="py-[1rem]">
         <CustomButton
-        loading={logintatus === 'loading'}
+          loading={isLoginLoading}
           text={"Login"}
-          onClick={handleSignUp}
+          onClick={handleLogin}
           classNames="hover:bg-primary-deepRed bg-[#91566D] text-[.95rem] w-[100%] text-white px-[1.5rem] py-3"
         />
       </div>
@@ -67,10 +46,10 @@ function Login() {
       </div>
 
       <div>
-        <AuthNavText text={'Don’t have an account?'} linkText={'Sign Up!'} link={'/auth/sign-up'} />
+        <AuthNavText text={"Don't have an account?"} linkText={"Sign Up!"} link={"/auth/sign-up"} />
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login
