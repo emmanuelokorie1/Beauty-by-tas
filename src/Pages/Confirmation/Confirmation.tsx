@@ -1,193 +1,446 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+"use client"
+
+import type React from "react"
+import { useEffect, useState } from "react"
+import { useLocation, Link } from "react-router-dom"
+import { CheckCircle, Loader2, AlertCircle, Package, MapPin, Calendar, Receipt, ArrowLeft, Printer } from "lucide-react"
+import { formatCurrency } from "../../utils/CurrencyFormat"
 
 interface Order {
-  id: string;
-  status:string;
-  name: string;
-  quantity: number;
-  total: number;
+  id: string
+  status: string
+  name: string
+  quantity: number
+  total: number
+  reference?: string
+  date?: string
 }
 
-//   id: string;
-//   status: 'pending' | 'confirmed' | 'failed';
-//   items: OrderItem[];
-//   total: number;
-interface OrderDetails  {
-    address: string;
-    city: string;
-    country:string;
-    customer_name: string;
-    description:string;
-    name: string;
-    price: number;
-    product_id: string;
-    product_total: string;
-    quantity: number;
-    state: string;
-    total_price: string;
-    status: string;
-    total: number;
-    id:string;
+interface OrderDetails {
+  address: string
+  city: string
+  country: string
+  customer_name: string
+  description: string
+  name: string
+  price: number
+  product_id: string
+  product_total: string
+  quantity: number
+  state: string
+  total_price: string
+  status: string
+  total: number
+  id: string
 }
 
 const OrderConfirmation: React.FC = () => {
-    const [orderDetails, setOrderDetails] = useState<OrderDetails[]>(null);
-    const [order, setOrder] = useState<Order>(null);
-
-
-  const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
+  const [orderDetails, setOrderDetails] = useState<OrderDetails[] | null>(null)
+  const [order, setOrder] = useState<Order | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const location = useLocation()
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
-      const searchParams = new URLSearchParams(location.search);
-      const trxref = searchParams.get('trxref');
-      console.log("🚀 ~ fetchOrderDetails ~ trxref:", trxref)
+      const searchParams = new URLSearchParams(location.search)
+      const trxref = searchParams.get("trxref")
 
       if (!trxref) {
-        console.error('No transaction reference found');
-        setIsLoading(false);
-        return;
+        setError("No transaction reference found")
+        setIsLoading(false)
+        return
       }
 
       try {
-        const response = await fetch(`https://beautybytas.sytes.net/orders/paystack/verify/${trxref}`);
-        console.log("🚀 ~ fetchOrderDetails ~ response:", response);
-        
-        if (!response.ok) throw new Error('Failed to fetch order details');
-        
-        const data = await response.json();
-        console.log("🚀 ~ data:", data);
-        
+        const response = await fetch(`https://beautybytas.sytes.net/orders/paystack/verify/${trxref}`)
+
+        if (!response.ok) throw new Error("Failed to fetch order details")
+
+        const data = await response.json()
+
         // Check if the productDescriptions array exists and is populated
-        const productDescriptions = data?.data?.metadata?.products?.productDescriptions;
-        console.log("🚀 ~ productDescriptions:", productDescriptions);
-        
+        const productDescriptions = data?.data?.metadata?.products?.productDescriptions
+
         if (!productDescriptions || !Array.isArray(productDescriptions)) {
-            console.error('Error: productDescriptions is not an array or is undefined');
-            return; // Stop further execution if the array is not valid
+          setError("Error: Product information is not available")
+          setIsLoading(false)
+          return
         }
-        
-        const remap = productDescriptions.map(d => {
-            return {
-                ...d,
-                total: parseFloat(d.total_price),
-                status: data.data.status,
-                id: d.product_id,
-                price: parseFloat(d.price),
-                quantity: parseFloat(d.quantity),
-            };
-        });
-        
-        console.log("🚀 ~ remap ~ remap:", remap);
-        
-        // Ensure remap has valid data before updating state
-        if (remap.length > 0) {
-            setOrderDetails(remap);
-            console.log("🚀 ~ orderDetails:", remap);
-        } else {
-            console.warn("Warning: remap array is empty, nothing to set for orderDetails.");
-        }
-        
-        setOrder({
-            total: data.data.amount,
+
+        const remap = productDescriptions.map((d) => {
+          return {
+            ...d,
+            total: Number.parseFloat(d.total_price),
             status: data.data.status,
-            name: data.data.name,
-            id: data.data.product_id || 0, // Default to 0 or any other placeholder
-            quantity: parseFloat(data.data.quantity) || 1 // Default to 1 or any other placeholder
-        });
-        
+            id: d.product_id,
+            price: Number.parseFloat(d.price),
+            quantity: Number.parseFloat(d.quantity),
+          }
+        })
 
+        if (remap.length > 0) {
+          setOrderDetails(remap)
+        } else {
+          setError("No items found in your order")
+        }
+
+        // Format the date
+        const orderDate = data.data.created_at
+          ? new Date(data.data.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+
+        setOrder({
+          total: data.data.amount / 100, // Assuming amount is in kobo/cents
+          status: data.data.status,
+          name: data.data.name || "Order",
+          id: data.data.id || trxref,
+          quantity: Number.parseFloat(data.data.quantity) || 1,
+          reference: data.data.reference || trxref,
+          date: orderDate,
+        })
       } catch (error) {
-        console.error('Error fetching order details:', error);
+        console.error("Error fetching order details:", error)
+        setError("Failed to load order details. Please try again later.")
       } finally {
-   
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchOrderDetails();
-  }, [location]);
+    fetchOrderDetails()
+  }, [location])
+
+  const handlePrint = () => {
+    // Create a new window for printing
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) return
+
+    // Generate print-friendly content
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Order Receipt - BeautyByTas</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+          }
+          .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF779F;
+          }
+          .order-info {
+            margin-bottom: 20px;
+          }
+          .order-info div {
+            margin-bottom: 5px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+          }
+          th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+          }
+          th {
+            background-color: #f9f9f9;
+          }
+          .total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+          }
+          .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+          }
+        </style>
+      </head>
+      <body onload="window.print()">
+        <div class="header">
+          <div class="logo">BeautyByTas</div>
+          <div>Order Receipt</div>
+        </div>
+        
+        <div class="order-info">
+          <div><strong>Order ID:</strong> ${order?.id || "N/A"}</div>
+          <div><strong>Reference:</strong> ${order?.reference || "N/A"}</div>
+          <div><strong>Date:</strong> ${order?.date || "N/A"}</div>
+          <div><strong>Status:</strong> ${order?.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : "N/A"}</div>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              orderDetails
+                ?.map(
+                  (item) => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${formatCurrency(item.price)}</td>
+                <td>${formatCurrency(item.price * item.quantity)}</td>
+              </tr>
+            `,
+                )
+                .join("") || ""
+            }
+          </tbody>
+        </table>
+        
+        <div class="total">
+          Total: ${formatCurrency(order?.total || 0)}
+        </div>
+        
+        <div class="footer">
+          Thank you for shopping with BeautyByTas!<br>
+          For any questions, please contact our customer support.
+        </div>
+      </body>
+      </html>
+    `
+
+    printWindow.document.open()
+    printWindow.document.write(printContent)
+    printWindow.document.close()
+  }
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <Loader2 className="h-12 w-12 animate-spin text-primary-deepRed mb-4" />
+        <p className="text-gray-600 font-medium">Processing your order...</p>
       </div>
-    );
+    )
   }
 
-  if (!orderDetails) {
+  if (error || !orderDetails) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <AlertCircle className="h-12 w-12 text-red-500 mb-4" />
-        <p className="text-lg text-red-500">Failed to load order details. Please try again later.</p>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 px-4">
+        <AlertCircle className="h-16 w-16 text-red-500 mb-6" />
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Not Found</h2>
+        <p className="text-lg text-gray-600 mb-8 text-center">
+          {error || "Failed to load order details. Please try again later."}
+        </p>
+        <Link
+          to="/shop"
+          className="flex items-center gap-2 bg-primary-deepRed text-white px-6 py-3 rounded-md hover:bg-opacity-90 transition-all"
+        >
+          <ArrowLeft size={18} />
+          Continue Shopping
+        </Link>
       </div>
-    );
+    )
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "success":
+        return "bg-green-100 text-green-800"
+      case "pending":
+        return "bg-yellow-100 text-yellow-800"
+      case "failed":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "success":
+        return <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
+      case "pending":
+        return <Loader2 className="h-6 w-6 animate-spin text-yellow-500 mr-2" />
+      default:
+        return <AlertCircle className="h-6 w-6 text-red-500 mr-2" />
+    }
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-100 border-b">
-          <h1 className="text-2xl font-bold text-gray-800">Order Confirmation</h1>
+    <div className="bg-gray-50 min-h-screen py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header with back button */}
+        <div className="flex items-center mb-8">
+          <Link to="/shop" className="flex items-center text-gray-600 hover:text-primary-deepRed transition-colors">
+            <ArrowLeft size={20} className="mr-2" />
+            <span>Back to Shop</span>
+          </Link>
         </div>
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-lg font-semibold text-gray-700">Order Status:</span>
-            <div className="flex items-center">
-              {order?.status === 'success' ? (
-                <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
-              ) : order?.status === 'pending' ? (
-                <Loader2 className="h-6 w-6 animate-spin text-yellow-500 mr-2" />
-              ) : (
-                <AlertCircle className="h-6 w-6 text-red-500 mr-2" />
-              )}
-              <span
-                className={
-                    order?.status === 'success'
-                    ? 'text-green-500'
-                    : order?.status === 'pending'
-                    ? 'text-yellow-500'
-                    : 'text-red-500'
-                }
-              >
-                {order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1)}
-              </span>
+
+        {/* Order confirmation card */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+          {/* Header */}
+          <div className="bg-primary-deepRed bg-opacity-10 px-6 py-6 border-b border-gray-100">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-1">Order Confirmation</h1>
+                <p className="text-gray-600">Thank you for your purchase!</p>
+              </div>
+              <div className={`px-4 py-2 rounded-full flex items-center ${getStatusColor(order?.status || "")}`}>
+                {getStatusIcon(order?.status || "")}
+                <span className="font-medium">
+                  {order?.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : "Unknown"}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Purchased Items:</h3>
-            <ul className="divide-y divide-gray-200">
-              {orderDetails && orderDetails?.map((item) => (
-                <li key={item?.id} className="py-2 flex justify-between">
-                  <span className="text-gray-600">
-                    {item?.name} (x{item?.quantity})
-                  </span>
-                  <span className="text-gray-800 font-medium">${(item?.price * item?.quantity).toFixed(2)}</span>
-                </li>
-              ))}
-            </ul>
+
+          {/* Order details */}
+          <div className="p-6">
+            {/* Order info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <Receipt className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Order Reference</h3>
+                    <p className="text-gray-800 font-medium">{order?.reference || "N/A"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <Calendar className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Order Date</h3>
+                    <p className="text-gray-800 font-medium">{order?.date || "N/A"}</p>
+                  </div>
+                </div>
+              </div>
+
+              {orderDetails[0]?.address && (
+                <div className="space-y-1">
+                  <div className="flex items-start">
+                    <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Shipping Address</h3>
+                      <p className="text-gray-800">{orderDetails[0].address}</p>
+                      <p className="text-gray-800">
+                        {orderDetails[0].city}, {orderDetails[0].state}, {orderDetails[0].country}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Order items */}
+            <div className="border rounded-lg overflow-hidden mb-8">
+              <div className="bg-gray-50 px-6 py-4 border-b">
+                <div className="flex items-center">
+                  <Package className="h-5 w-5 text-gray-400 mr-2" />
+                  <h3 className="font-semibold text-gray-700">Order Items</h3>
+                </div>
+              </div>
+
+              <div className="divide-y divide-gray-200">
+                {orderDetails.map((item) => (
+                  <div key={item.id} className="px-6 py-4">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-800">{item.name}</h4>
+                        {item.description && <p className="text-sm text-gray-500 mt-1">{item.description}</p>}
+                      </div>
+                      <div className="flex items-center justify-between sm:justify-end gap-8">
+                        <div className="text-sm text-gray-500">
+                          {item.quantity} × {formatCurrency(item.price)}
+                        </div>
+                        <div className="font-medium text-gray-800">{formatCurrency(item.price * item.quantity)}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Order summary */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <div className="flex justify-between mb-4">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="text-gray-800 font-medium">{formatCurrency(order?.total || 0)}</span>
+              </div>
+              <div className="flex justify-between mb-4">
+                <span className="text-gray-600">Shipping</span>
+                <span className="text-gray-800 font-medium">Free</span>
+              </div>
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="flex justify-between">
+                  <span className="text-lg font-bold text-gray-800">Total</span>
+                  <span className="text-lg font-bold text-gray-800">{formatCurrency(order?.total || 0)}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="text-xl font-bold flex justify-between text-gray-800">
-            <span>Total:</span>
-            <span>{order.total}</span>
+
+          {/* Actions */}
+          <div className="px-6 py-4 bg-gray-50 border-t">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={handlePrint}
+                className="flex-1 flex justify-center items-center gap-2 bg-primary-deepRed text-white py-3 px-4 rounded-md hover:bg-opacity-90 transition-all"
+              >
+                <Printer size={18} />
+                Print Receipt
+              </button>
+              <Link
+                to="/shop"
+                className="flex-1 flex justify-center items-center gap-2 border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-all"
+              >
+                Continue Shopping
+              </Link>
+            </div>
           </div>
         </div>
-        <div className="px-6 py-4 bg-gray-100 border-t">
-          <button 
-          style={{backgroundColor:"#ff779f"}}
-            className="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            onClick={() => window.print()}
-          >
-            Print Receipt
-          </button>
+
+        {/* Help text */}
+        <div className="text-center text-gray-500 text-sm">
+          <p>If you have any questions about your order, please contact our customer support.</p>
+          <p className="mt-2">
+            <Link to="/contact-us" className="text-primary-deepRed hover:underline">
+              Contact Us
+            </Link>
+          </p>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OrderConfirmation;
+export default OrderConfirmation

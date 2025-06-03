@@ -104,7 +104,7 @@ function App() {
             }
           />
           <Route
-            path="/confirmation"
+            path="/Confirmation"
             element={
               <Suspense fallback={<Loading />}>
                 <Confirmation />
