@@ -83,7 +83,7 @@ function Shop() {
           products.map((product: ProductType, i: number) => (
             <div key={i}>
               <ProductCard
-                id={product?.productid}
+                id={product?.productId}
                 productName={product?.productname}
                 description={product?.description}
                 price={product?.price}
