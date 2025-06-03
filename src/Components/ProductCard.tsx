@@ -41,15 +41,26 @@ const ProductCard: React.FC<CustomProps> = ({
   const navigate = useNavigate()
 
   const handleAddToCart = () => {
+    // Prevent navigation when clicking add to cart
+
+    console.log("Add to cart clicked for product:", id) // Debug log
+    console.log("User authenticated:", isAuthenticated) // Debug log
+
     if (!isAuthenticated) {
       toast.error("Please login to add items to cart")
       navigate("/auth/login")
       return
     }
 
-    if (id) {
-      addToCart(id, 1)
+    if (!id) {
+      toast.error("Product ID is missing")
+      console.error("Product ID is missing:", { id, description, productName })
+      return
     }
+
+    console.log("Calling addToCart with ID:", id) // Debug log
+    addToCart(id, 1)
+
     if (onClick) {
       onClick()
     }
@@ -114,6 +125,15 @@ const ProductCard: React.FC<CustomProps> = ({
               </div>
             </div>
           </Link>
+
+          {/* Temporary debug info - remove after fixing */}
+          {(import.meta.env.MODE === "development") && (
+            <div className="text-xs text-gray-500 mb-2">
+              <div>ID: {id || "No ID"}</div>
+              <div>Auth: {isAuthenticated ? "Yes" : "No"}</div>
+              <div>Loading: {isAddingToCart ? "Yes" : "No"}</div>
+            </div>
+          )}
 
           <div className="mt-[1rem]">
             <CustomButton

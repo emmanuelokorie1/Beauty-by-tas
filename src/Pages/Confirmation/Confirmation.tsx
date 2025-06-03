@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useLocation, Link } from "react-router-dom"
 import { CheckCircle, Loader2, AlertCircle, Package, MapPin, Calendar, Receipt, ArrowLeft, Printer } from "lucide-react"
 import { formatCurrency } from "../../utils/CurrencyFormat"
+import axiosInstance from "../../services/axiosInstance"
 
 interface Order {
   id: string
@@ -53,11 +54,8 @@ const OrderConfirmation: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`https://beautybytas.sytes.net/orders/paystack/verify/${trxref}`)
-
-        if (!response.ok) throw new Error("Failed to fetch order details")
-
-        const data = await response.json()
+        const response = await axiosInstance.get(`/orders/verify/${trxref}`)
+        const data = response.data
 
         // Check if the productDescriptions array exists and is populated
         const productDescriptions = data?.data?.metadata?.products?.productDescriptions
@@ -107,9 +105,10 @@ const OrderConfirmation: React.FC = () => {
           reference: data.data.reference || trxref,
           date: orderDate,
         })
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching order details:", error)
-        setError("Failed to load order details. Please try again later.")
+        const errorMessage = error.response?.data?.message || "Failed to load order details. Please try again later."
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
       }
