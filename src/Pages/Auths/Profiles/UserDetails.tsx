@@ -1,37 +1,38 @@
-import { useState } from "react";
-import InputLabel from "../../../Components/InputLabel";
-import CustomButton from "../../../Components/CustomButton";
-import { PiInfo } from "react-icons/pi";
+"use client"
+
+import { useState } from "react"
+import InputLabel from "../../../Components/InputLabel"
+import CustomButton from "../../../Components/CustomButton"
+import { PiInfo } from "react-icons/pi"
+import AddressSelector from "../../../Components/AddressSelector"
 
 type EditState = {
-  personal: boolean;
-  address: boolean;
-  account: boolean;
-  password: boolean;
-};
+  personal: boolean
+  address: boolean
+  account: boolean
+  password: boolean
+}
 
 const UserDetails = () => {
-  const [firstName, setFirstName] = useState("Pixel");
-  const [lastName, setLastName] = useState("Signature");
-  const [dob, setDob] = useState("Not yet added");
-  const [email, setEmail] = useState("pixelssignature1@gmail.com");
-  const [password, setPassword] = useState("...........");
-
-  const [address, setAddress] = useState("4317 Godfrey Road, New York");
+  const [firstName, setFirstName] = useState("Pixel")
+  const [lastName, setLastName] = useState("Signature")
+  const [dob, setDob] = useState("Not yet added")
+  const [email, setEmail] = useState("pixelssignature1@gmail.com")
+  const [password, setPassword] = useState("...........")
 
   const [edit, setEdit] = useState<EditState>({
     personal: false,
     address: false,
     account: false,
     password: false,
-  });
+  })
 
   const handleEditClick = (field: keyof EditState) => {
     setEdit((prevEdit) => ({
       ...prevEdit,
       [field]: !prevEdit[field],
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="s1100:flex justify-between gap-[1.5rem]">
@@ -39,10 +40,7 @@ const UserDetails = () => {
         <aside className="bg-[#F3F3F3] p-[2rem] rounded-lg">
           <div className="flex justify-between pb-[2rem]">
             <div className=" text-[1.2rem] fontdm">Personal information</div>
-            <div
-              className="linkBtn"
-              onClick={() => handleEditClick("personal")}
-            >
+            <div className="linkBtn" onClick={() => handleEditClick("personal")}>
               {edit?.personal ? "Cancel" : "Edit"}
             </div>
           </div>
@@ -58,42 +56,24 @@ const UserDetails = () => {
                     label={"First Name"}
                   />
                   <div className="pt-[.7rem]">
-                    <InputLabel
-                      defaultValue={lastName}
-                      setInputValue={setLastName}
-                      type={"text"}
-                      label={"Last Name"}
-                    />
+                    <InputLabel defaultValue={lastName} setInputValue={setLastName} type={"text"} label={"Last Name"} />
                   </div>
                 </>
               ) : (
                 <div>
-                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">
-                    Name
-                  </label>
-                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">
-                    {firstName + " " + lastName}
-                  </div>
+                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">Name</label>
+                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">{firstName + " " + lastName}</div>
                 </div>
               )}
             </div>
 
             <div>
               {edit?.personal ? (
-                <InputLabel
-                  defaultValue={dob}
-                  setInputValue={setDob}
-                  type={"date"}
-                  label={"Birthday"}
-                />
+                <InputLabel defaultValue={dob} setInputValue={setDob} type={"date"} label={"Birthday"} />
               ) : (
                 <div>
-                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">
-                    Birthday
-                  </label>
-                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">
-                    {dob}
-                  </div>
+                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">Birthday</label>
+                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">{dob}</div>
                 </div>
               )}
             </div>
@@ -119,21 +99,14 @@ const UserDetails = () => {
             <div className="border-b pb-[1rem]">
               {edit?.account ? (
                 <div className="s900:w-[60%] w-[100%]">
-                  <InputLabel
-                    defaultValue={email}
-                    setInputValue={setEmail}
-                    type={"email"}
-                    label={"Email account"}
-                  />
+                  <InputLabel defaultValue={email} setInputValue={setEmail} type={"email"} label={"Email account"} />
                 </div>
               ) : (
                 <div>
                   <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">
                     Email account
                   </label>
-                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">
-                    {email}
-                  </div>
+                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">{email}</div>
                 </div>
               )}
 
@@ -149,10 +122,7 @@ const UserDetails = () => {
             <div className="pt-[1rem]">
               <div className="flex justify-between pb-[2rem]">
                 <div className=" text-[1.2rem] fontdm">Password</div>
-                <div
-                  className="linkBtn"
-                  onClick={() => handleEditClick("password")}
-                >
+                <div className="linkBtn" onClick={() => handleEditClick("password")}>
                   {edit?.password ? "Cancel" : "Edit"}
                 </div>
               </div>
@@ -175,9 +145,7 @@ const UserDetails = () => {
                 </div>
               ) : (
                 <div>
-                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">
-                    Password
-                  </label>
+                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">Password</label>
                   <div className=" text-[2rem] text-gray-700">{password}</div>
                 </div>
               )}
@@ -189,8 +157,7 @@ const UserDetails = () => {
                     classNames="hover:bg-primary-deepRed bg-[#91566D] text-[.95rem] w-fit text-white px-[2rem] py-3"
                   />
                   <div className="text-[.8rem] flex items-center gap-[.3rem] text-red-600 pt-[1rem] md:pt-0">
-                    <PiInfo size={20} /> Please note: Changing your password will require
-                    you to log in again.
+                    <PiInfo size={20} /> Please note: Changing your password will require you to log in again.
                   </div>
                 </div>
               )}
@@ -208,41 +175,22 @@ const UserDetails = () => {
             </div>
           </div>
 
-          <div className="">
-            <div>
-              {edit?.address ? (
-                <>
-                  <InputLabel
-                    defaultValue={address}
-                    setInputValue={setAddress}
-                    type={"text"}
-                    label={"Default"}
-                  />
-                </>
-              ) : (
-                <div>
-                  <label className="sm:text-[.77rem] text-[.7rem] font-semibold text-black uppercase">
-                    Default
-                  </label>
-                  <div className="pt-[.5rem] text-[.88rem] text-gray-700">
-                    {address}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          {edit?.address && (
-            <div className="flex justify-end mt-[2rem]">
+          {edit?.address ? (
+            <AddressSelector onSelect={() => {}} />
+          ) : (
+            <div className="text-gray-700">
+              <p className="mb-2">Manage your shipping addresses for a smoother checkout experience.</p>
               <CustomButton
-                text={"Save Changes"}
-                classNames="hover:bg-primary-deepRed bg-[#91566D] text-[.95rem] w-fit text-white px-[2rem] py-3"
+                text={"Manage Addresses"}
+                onClick={() => handleEditClick("address")}
+                classNames="hover:bg-primary-deepRed bg-[#91566D] text-[.95rem] w-fit text-white px-[2rem] py-3 mt-4"
               />
             </div>
           )}
         </aside>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default UserDetails;
+export default UserDetails

@@ -14,7 +14,8 @@ export interface ProductType {
   images?: string[] | any;
   status?: boolean;
   price?: number | string | any;
-  productid?: string;
+  productId?: string;
+  cartId?: string;
   productname?: string;
   totalStock?: number | string;
   count?: number;

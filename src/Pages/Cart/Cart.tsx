@@ -1,6 +1,4 @@
 "use client"
-
-import React from "react"
 import { FaMinus, FaPlus } from "react-icons/fa6"
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
@@ -12,9 +10,12 @@ import ProductCard from "../../Components/ProductCard"
 import { useCart } from "../../hooks/useCart"
 import { useAuth } from "../../hooks/useAuth"
 import { formatCurrency } from "../../utils/CurrencyFormat"
+import AddressSelector from "../../Components/AddressSelector"
 
 function Cart() {
   const [showModalIfNotLoggedIn, setShowModalIfNotLoggedIn] = useState<boolean>(false)
+  const [showAddressModal, setShowAddressModal] = useState<boolean>(false)
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
 
   const {
     cartItems,
@@ -41,8 +42,8 @@ function Cart() {
     }
   }
 
-  const handleRemoveFromCart = (productId: string) => {
-    removeFromCart(productId)
+  const handleRemoveFromCart = (cartId: string) => {
+    removeFromCart(cartId)
   }
 
   const handleCheckOut = () => {
@@ -52,7 +53,7 @@ function Cart() {
     }
 
     if (user && user.user) {
-      handleProcessCheckout()
+      setShowAddressModal(true)
     } else {
       setShowModalIfNotLoggedIn(true)
     }
@@ -61,22 +62,7 @@ function Cart() {
   const handleProcessCheckout = async () => {
     const checkoutData = {
       email: user?.user?.email || "",
-      name: user?.user?.name || "",
-      userId: user?.user?.id || user?.user?.userId || "",
-      address: "",
-      state: "",
-      city: "",
-      country: "",
-      items: cartItems.map((item) => ({
-        productId: item.productid,
-        quantity: item.quantity || 1,
-        price: item.price,
-        name: item.description,
-        categoryname: item.categoryname,
-        image: item.images?.[0] || "",
-      })),
-      totalAmount: totalAmount,
-      orders: [],
+      addressId: selectedAddressId,
     }
 
     checkout(checkoutData)
@@ -84,8 +70,8 @@ function Cart() {
 
   const data2 = cartItems.map((item) => (
     <ProductCard
-      key={item.productid}
-      id={item.productid}
+      key={item.productId}
+      id={item.productId}
       description={item.description}
       productName={item.categoryname}
       price={item.price}
@@ -126,6 +112,33 @@ function Cart() {
         <div className="pe-[3rem] boldRebuk text-[1.2rem]">Please login to continue</div>
       </Modal>
 
+      {/* Address Selection Modal */}
+      <Modal
+        visible={showAddressModal}
+        onCancel={() => setShowAddressModal(false)}
+        footer={null}
+        title="Select Shipping Address"
+        style={{ width: 700 }}
+      >
+        <div className="py-4">
+          <AddressSelector onSelect={setSelectedAddressId} selectedAddressId={selectedAddressId} />
+
+          <div className="flex justify-end gap-4 mt-8 border-t pt-4">
+            <CustomButton
+              text="Cancel"
+              onClick={() => setShowAddressModal(false)}
+              classNames="border border-gray-300 text-gray-700 px-6 py-2"
+            />
+            <CustomButton
+              text="Continue to Payment"
+              onClick={handleProcessCheckout}
+              loading={isCheckingOut}
+              classNames="bg-primary-deepRed text-white px-6 py-2"
+            />
+          </div>
+        </div>
+      </Modal>
+
       {/* Error Display */}
       {checkoutError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -154,7 +167,7 @@ function Cart() {
             </div>
 
             {cartItems.map((item) => (
-              <div key={item.productid} className="flex my-[1rem] border-b">
+              <div key={item.cartId || item.productId} className="flex my-[1rem] border-b">
                 <aside className="w-[15%]">
                   <div className="h-[100px] overflow-hidden">
                     <img
@@ -167,21 +180,19 @@ function Cart() {
                 <aside className="ps-[1rem] w-[85%]">
                   <div className="text-gray-700 capitalize">{item.categoryname}</div>
                   <div className="fontdm sm:text-[1.1rem] text-[.97rem]">{item.description}</div>
-                  <div className="font-bold pt-[1rem]">
-                    {formatCurrency(item.price * (item.quantity || 1))}
-                  </div>
+                  <div className="font-bold pt-[1rem]">{formatCurrency(item.price * (item.quantity || 1))}</div>
 
                   <div className="flex justify-between items-end py-[1rem]">
                     <div
                       className="text-primary-deepRed cursor-pointer font-bold hover:underline"
-                      onClick={() => handleRemoveFromCart(item.productid)}
+                      onClick={() => handleRemoveFromCart(item.cartId || item.productId)}
                     >
                       Remove
                     </div>
                     <aside className="flex justify-between items-center gap-[10px] rounded-md border border-gray-200 md:w-[35%] w-[50%]">
                       <button
                         className="py-2 w-[35%] hover:bg-gray-200 rounded-md flex justify-center sm:text-[1.3rem] text-[1rem] disabled:opacity-50"
-                        onClick={() => handleDecrementCount(item.productid, item.quantity || 1)}
+                        onClick={() => handleDecrementCount(item.cartId, item.quantity || 1)}
                         disabled={(item.quantity || 1) === 1 || isUpdatingQuantity}
                       >
                         <FaMinus />
@@ -189,7 +200,7 @@ function Cart() {
                       <div className="sm:text-[1.1rem] text-[1rem] font-semibold">{item.quantity || 1}</div>
                       <button
                         className="py-2 w-[35%] hover:bg-gray-200 flex justify-center rounded-md sm:text-[1.3rem] text-[1rem] disabled:opacity-50"
-                        onClick={() => handleIncrementCount(item.productid, item.quantity || 1)}
+                        onClick={() => handleIncrementCount(item.cartId, item.quantity || 1)}
                         disabled={isUpdatingQuantity}
                       >
                         <FaPlus />

@@ -14,42 +14,51 @@ interface AddToCartData {
 
 interface CartResponse {
   success: boolean
-  data: CartItem[]
+  data: {
+    items: CartItem[]
+  }
   message?: string
 }
 
-// Get cart items from server
-const getCartItems = async (): Promise<CartItem[]> => {
+interface CheckoutData {
+  email: string
+  addressId?: string
+  items?: any[]
+  totalAmount?: number
+}
+
+// Get cart items from server - return the full response, not just the items
+const getCartData = async (): Promise<CartResponse | null> => {
   try {
     // Check if user is authenticated
     const userDetails = sessionStorage.getItem("userDetails")
     if (!userDetails) {
-      return []
+      return null
     }
 
     const response = await axiosInstance.get<CartResponse>("/cart")
-    return response.data.data || []
+    return response.data
   } catch (error: any) {
-    // If unauthorized, return empty cart
+    // If unauthorized, return null
     if (error.response?.status === 401) {
-      return []
+      return null
     }
     console.error("Failed to fetch cart items:", error)
-    return []
+    return null
   }
 }
 
 export const useCart = () => {
   const queryClient = useQueryClient()
 
-  // Query for cart items from server
+  // Query for cart data from server
   const {
-    data: cartItems = [],
+    data: cartData,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["cart"],
-    queryFn: getCartItems,
+    queryFn: getCartData,
     staleTime: 1000 * 60 * 2, // 2 minutes
     retry: (failureCount, error: any) => {
       // Don't retry if unauthorized
@@ -90,7 +99,7 @@ export const useCart = () => {
   // Remove from cart mutation
   const removeFromCartMutation = useMutation({
     mutationFn: async (productId: string) => {
-      const response = await axiosInstance.delete(`/cart/remove/${productId}`)
+      const response = await axiosInstance.delete(`/cart/${productId}`)
       return response.data
     },
     onSuccess: (data) => {
@@ -105,8 +114,16 @@ export const useCart = () => {
 
   // Update quantity mutation
   const updateQuantityMutation = useMutation({
-    mutationFn: async ({ productId, quantity }: { productId: string; quantity: number }) => {
-      const response = await axiosInstance.put(`/cart/update`, { productId, quantity })
+    mutationFn: async ({
+      productId,
+      quantity,
+    }: {
+      productId: string
+      quantity: number
+    }) => {
+      const response = await axiosInstance.put(`/cart/${productId}`, {
+        quantity,
+      })
       return response.data
     },
     onSuccess: (data) => {
@@ -135,10 +152,23 @@ export const useCart = () => {
     },
   })
 
-  // Checkout mutation
+  // Checkout mutation - Updated to support addressId
   const checkoutMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await axiosInstance.post("/cart/checkout", data)
+    mutationFn: async (data: CheckoutData) => {
+      // Prepare checkout data
+      const checkoutData: CheckoutData = {
+        email: data.email,
+        // Only include addressId if provided
+        ...(data.addressId && { addressId: data.addressId }),
+      }
+
+      // Include items and totalAmount if provided
+      if (data.items) {
+        checkoutData.items = data.items
+        checkoutData.totalAmount = data.totalAmount
+      }
+
+      const response = await axiosInstance.post("/cart/checkout", checkoutData)
       return response.data
     },
     onSuccess: (data) => {
@@ -163,6 +193,9 @@ export const useCart = () => {
   const addToCart = (productId: string, quantity = 1) => {
     addToCartMutation.mutate({ productId, quantity })
   }
+
+  // Extract cart items from the response data
+  const cartItems = cartData?.data?.items || []
 
   // Helper function to get cart count
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0)
