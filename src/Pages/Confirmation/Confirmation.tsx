@@ -3,7 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useLocation, Link } from "react-router-dom"
-import { CheckCircle, Loader2, AlertCircle, Package, MapPin, Calendar, Receipt, ArrowLeft, Printer } from "lucide-react"
+import { CheckCircle, Loader2, AlertCircle, Package, Calendar, Receipt, ArrowLeft, Printer } from "lucide-react"
 import { formatCurrency } from "../../utils/CurrencyFormat"
 import axiosInstance from "../../services/axiosInstance"
 
@@ -15,28 +15,40 @@ interface Order {
   total: number
   reference?: string
   date?: string
+  customerName?: string
 }
 
 interface OrderDetails {
-  address: string
-  city: string
-  country: string
-  customer_name: string
-  description: string
-  name: string
-  price: number
-  product_id: string
-  product_total: string
-  quantity: number
-  state: string
-  total_price: string
-  status: string
-  total: number
   id: string
+  productId: string
+  productName: string
+  images: string[]
+  amount: number
+  totalStock: number
+  customerName: string
+  reference: string
+  status: string
+  createdAt: string
+  paymentDetails: {
+    reference: string
+    status: string
+    paidAt: string
+    channel: string
+    amount: number
+    customer: {
+      email: string
+      name: string
+    }
+    authorization: {
+      cardType: string
+      bank: string
+      last4: string
+    }
+  }
 }
 
 const OrderConfirmation: React.FC = () => {
-  const [orderDetails, setOrderDetails] = useState<OrderDetails[] | null>(null)
+  const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null)
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -57,35 +69,21 @@ const OrderConfirmation: React.FC = () => {
         const response = await axiosInstance.get(`/orders/verify/${trxref}`)
         const data = response.data
 
-        // Check if the productDescriptions array exists and is populated
-        const productDescriptions = data?.data?.metadata?.products?.productDescriptions
+        console.log("API Response:", data) // Debug log
 
-        if (!productDescriptions || !Array.isArray(productDescriptions)) {
-          setError("Error: Product information is not available")
+        // Check if we have the order data
+        if (!data?.data) {
+          setError("Order information is not available")
           setIsLoading(false)
           return
         }
 
-        const remap = productDescriptions.map((d) => {
-          return {
-            ...d,
-            total: Number.parseFloat(d.total_price),
-            status: data.data.status,
-            id: d.product_id,
-            price: Number.parseFloat(d.price),
-            quantity: Number.parseFloat(d.quantity),
-          }
-        })
-
-        if (remap.length > 0) {
-          setOrderDetails(remap)
-        } else {
-          setError("No items found in your order")
-        }
+        const orderData = data.data
+        setOrderDetails(orderData)
 
         // Format the date
-        const orderDate = data.data.created_at
-          ? new Date(data.data.created_at).toLocaleDateString("en-US", {
+        const orderDate = orderData.createdAt
+          ? new Date(orderData.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -97,13 +95,14 @@ const OrderConfirmation: React.FC = () => {
             })
 
         setOrder({
-          total: data.data.amount / 100, // Assuming amount is in kobo/cents
-          status: data.data.status,
-          name: data.data.name || "Order",
-          id: data.data.id || trxref,
-          quantity: Number.parseFloat(data.data.quantity) || 1,
-          reference: data.data.reference || trxref,
+          total: orderData.amount / 100, // Convert from kobo/cents to main currency
+          status: orderData.paymentDetails?.status || orderData.status,
+          name: orderData.productName || "Order",
+          id: orderData.id,
+          quantity: 1, // Default to 1 since it's not in the response
+          reference: orderData.reference,
           date: orderDate,
+          customerName: orderData.customerName,
         })
       } catch (error: any) {
         console.error("Error fetching order details:", error)
@@ -195,6 +194,7 @@ const OrderConfirmation: React.FC = () => {
           <div><strong>Order ID:</strong> ${order?.id || "N/A"}</div>
           <div><strong>Reference:</strong> ${order?.reference || "N/A"}</div>
           <div><strong>Date:</strong> ${order?.date || "N/A"}</div>
+          <div><strong>Customer:</strong> ${order?.customerName || "N/A"}</div>
           <div><strong>Status:</strong> ${order?.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : "N/A"}</div>
         </div>
         
@@ -208,20 +208,12 @@ const OrderConfirmation: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            ${
-              orderDetails
-                ?.map(
-                  (item) => `
-              <tr>
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>${formatCurrency(item.price)}</td>
-                <td>${formatCurrency(item.price * item.quantity)}</td>
-              </tr>
-            `,
-                )
-                .join("") || ""
-            }
+            <tr>
+              <td>${orderDetails?.productName || "N/A"}</td>
+              <td>${order?.quantity || 1}</td>
+              <td>${formatCurrency(order?.total || 0)}</td>
+              <td>${formatCurrency(order?.total || 0)}</td>
+            </tr>
           </tbody>
         </table>
         
@@ -312,7 +304,7 @@ const OrderConfirmation: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-800 mb-1">Order Confirmation</h1>
-                <p className="text-gray-600">Thank you for your purchase!</p>
+                <p className="text-gray-600">Thank you for your purchase, {orderDetails.customerName}!</p>
               </div>
               <div className={`px-4 py-2 rounded-full flex items-center ${getStatusColor(order?.status || "")}`}>
                 {getStatusIcon(order?.status || "")}
@@ -344,20 +336,19 @@ const OrderConfirmation: React.FC = () => {
                 </div>
               </div>
 
-              {orderDetails[0]?.address && (
-                <div className="space-y-1">
-                  <div className="flex items-start">
-                    <MapPin className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-500">Shipping Address</h3>
-                      <p className="text-gray-800">{orderDetails[0].address}</p>
-                      <p className="text-gray-800">
-                        {orderDetails[0].city}, {orderDetails[0].state}, {orderDetails[0].country}
-                      </p>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <Package className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Payment Method</h3>
+                    <p className="text-gray-800 font-medium">
+                      {orderDetails.paymentDetails?.authorization?.cardType} ending in{" "}
+                      {orderDetails.paymentDetails?.authorization?.last4}
+                    </p>
+                    <p className="text-sm text-gray-500">{orderDetails.paymentDetails?.authorization?.bank}</p>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Order items */}
@@ -369,23 +360,26 @@ const OrderConfirmation: React.FC = () => {
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-200">
-                {orderDetails.map((item) => (
-                  <div key={item.id} className="px-6 py-4">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-800">{item.name}</h4>
-                        {item.description && <p className="text-sm text-gray-500 mt-1">{item.description}</p>}
-                      </div>
-                      <div className="flex items-center justify-between sm:justify-end gap-8">
-                        <div className="text-sm text-gray-500">
-                          {item.quantity} × {formatCurrency(item.price)}
-                        </div>
-                        <div className="font-medium text-gray-800">{formatCurrency(item.price * item.quantity)}</div>
-                      </div>
+              <div className="px-6 py-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                      <img
+                        src={orderDetails.images?.[0] || "/placeholder.svg"}
+                        alt={orderDetails.productName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-800">{orderDetails.productName}</h4>
+                      <p className="text-sm text-gray-500">Product ID: {orderDetails.productId}</p>
                     </div>
                   </div>
-                ))}
+                  <div className="flex items-center justify-between sm:justify-end gap-8">
+                    <div className="text-sm text-gray-500">1 × {formatCurrency(order?.total || 0)}</div>
+                    <div className="font-medium text-gray-800">{formatCurrency(order?.total || 0)}</div>
+                  </div>
+                </div>
               </div>
             </div>
 
