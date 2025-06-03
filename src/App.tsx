@@ -1,30 +1,25 @@
-import { Suspense, lazy } from "react";
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
-import Layouts from "./Layouts/Layouts";
-import Loading from "./Components/Loading";
-import Shop from "./Pages/Shop/Shop";
-import Discover from "./Pages/Discover/Discover";
-import About from "./Pages/About/About";
-import Bag from "./Pages/Bag/Bag";
-import Cart from "./Pages/Cart/Cart";
-import Login from "./Pages/Auths/NotAth/Login";
-import SignUp from "./Pages/Auths/NotAth/SignUp";
-import ForgetPassword from "./Pages/Auths/NotAth/ForgetPassword";
-import Faq from "./Pages/Faq/Faq";
-import Privacy from "./Pages/Faq/Privacy";
+import { Suspense, lazy } from "react"
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
+import Layouts from "./Layouts/Layouts"
+import Loading from "./Components/Loading"
+import Shop from "./Pages/Shop/Shop"
+import Discover from "./Pages/Discover/Discover"
+import About from "./Pages/About/About"
+import Bag from "./Pages/Bag/Bag"
+import Cart from "./Pages/Cart/Cart"
+import Login from "./Pages/Auths/NotAth/Login"
+import SignUp from "./Pages/Auths/NotAth/SignUp"
+import ForgetPassword from "./Pages/Auths/NotAth/ForgetPassword"
+import Faq from "./Pages/Faq/Faq"
+import Privacy from "./Pages/Faq/Privacy"
 // import Layouts from "./Layouts/Layouts";
 // import Loading from "./Layouts/Loading";
 
-const Home = lazy(() => import("./Pages/Home/Home"));
-const NotLoggedIn = lazy(() => import("./Pages/Auths/NotAth/NotLoggedIn"));
-const Contact = lazy(() => import("./Pages/Contact/Contact"));
-const Profile = lazy(() => import("./Pages/Auths/Profiles/Profile"));
-const Confirmation = lazy(() => import("./Pages/Confirmation/Confirmation"));
+const Home = lazy(() => import("./Pages/Home/Home"))
+const NotLoggedIn = lazy(() => import("./Pages/Auths/NotAth/NotLoggedIn"))
+const Contact = lazy(() => import("./Pages/Contact/Contact"))
+const Profile = lazy(() => import("./Pages/Auths/Profiles/Profile"))
+const Confirmation = lazy(() => import("./Pages/Confirmation/Confirmation"))
 // const Career = lazy(() => import("./Pages/Career/Career"));
 // const News = lazy(() => import("./Pages/News/News"));
 // const WhoAreWe = lazy(() => import("./Pages/About/matrix/WhoAreWe"));
@@ -103,6 +98,15 @@ function App() {
               </Suspense>
             }
           />
+          {/* Add both routes to handle case sensitivity */}
+          <Route
+            path="/confirmation"
+            element={
+              <Suspense fallback={<Loading />}>
+                <Confirmation />
+              </Suspense>
+            }
+          />
           <Route
             path="/Confirmation"
             element={
@@ -142,15 +146,15 @@ function App() {
             }
           />
         </Route>
-      </Route>
-    )
-  );
+      </Route>,
+    ),
+  )
 
   return (
     <div className="App bg-primary-background">
       <RouterProvider router={router} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
