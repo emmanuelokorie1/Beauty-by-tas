@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProductDecriptions from "../../Components/ProductDecriptions";
 import HeaderText from "../../Components/HeaderText";
 import ProductSwipper from "../../Components/ProductSwipper";

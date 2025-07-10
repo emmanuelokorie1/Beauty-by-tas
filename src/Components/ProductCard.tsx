@@ -1,27 +1,30 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { GoHeart, GoDotFill } from "react-icons/go"
-import productImg from "../assets/product.png"
-import CustomButton from "./CustomButton"
-import Skeleton from "react-loading-skeleton"
-import { formatCurrency } from "../utils/CurrencyFormat"
-import { Link, useNavigate } from "react-router-dom"
-import { useCart } from "../hooks/useCart"
-import { useAuth } from "../hooks/useAuth"
-import { toast } from "sonner"
+import type React from "react";
+import { GoDotFill } from "react-icons/go";
+import productImg from "../assets/product.png";
+import CustomButton from "./CustomButton";
+import Skeleton from "react-loading-skeleton";
+import { formatCurrency } from "../utils/CurrencyFormat";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
+import { toast } from "sonner";
 
 interface CustomProps {
-  classContainer?: string
-  classLoading?: string
-  width?: string
-  img?: string
-  loading?: boolean
-  description?: string
-  productName?: string
-  price?: number | string
-  id?: string
-  onClick?: () => void
+  classContainer?: string;
+  classLoading?: string;
+  width?: string;
+  img?: string;
+  loading?: boolean;
+  description?: string;
+  productName?: string;
+  price?: number | string;
+  discountPrice?: number | string;
+  totalStock?: number | string;
+  id?: string;
+  stockStatus?: string;
+  onClick?: () => void;
 }
 
 const ProductCard: React.FC<CustomProps> = ({
@@ -34,37 +37,76 @@ const ProductCard: React.FC<CustomProps> = ({
   productName,
   price,
   id,
+  discountPrice,
   onClick,
+  stockStatus,
+  totalStock
 }) => {
-  const { addToCart, isAddingToCart } = useCart()
-  const { isAuthenticated } = useAuth()
-  const navigate = useNavigate()
+  const { addToCart, isAddingToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    // Prevent navigation when clicking add to cart
-
-    console.log("Add to cart clicked for product:", id) // Debug log
-    console.log("User authenticated:", isAuthenticated) // Debug log
-
+    if (isOutOfStock) return;
     if (!isAuthenticated) {
-      toast.error("Please login to add items to cart")
-      navigate("/auth/login")
-      return
+      toast.error("Please login to add items to cart");
+      navigate("/auth/login");
+      return;
     }
 
     if (!id) {
-      toast.error("Product ID is missing")
-      console.error("Product ID is missing:", { id, description, productName })
-      return
+      toast.error("Product ID is missing");
+      return;
     }
-
-    console.log("Calling addToCart with ID:", id) // Debug log
-    addToCart(id, 1)
+    addToCart(id, 1);
 
     if (onClick) {
-      onClick()
+      onClick();
     }
-  }
+  };
+
+  const status = stockStatus?.toLowerCase();
+  const statusColor = status?.includes("low")
+    ? "text-red-500"
+    : status?.includes("medium")
+    ? "text-orange-500"
+    : status?.includes("high") || status?.includes("limited")
+    ? "text-green-500"
+    : status?.includes("out")
+    ? "text-gray-400"
+    : "text-gray-400";
+
+  const statusLabel = status?.includes("low")
+    ? "Low Stock"
+    : status?.includes("medium")
+    ? "Medium Stock"
+    : status?.includes("high")
+    ? "In Stock"
+    : status?.includes("out")
+    ? "Out of Stock"
+    : "";
+
+  const discountPercent =
+    price && discountPrice
+      ? Math.round(100 - (Number(price) / Number(discountPrice)) * 100)
+      : null;
+
+  const isOutOfStock = !totalStock || Number(totalStock) <= 0;
+
+  // Store product in sessionStorage on card click
+  const handleCardClick = () => {
+    const productObj = {
+      id,
+      productName,
+      price,
+      img,
+      description,
+      discountPrice,
+      stockStatus,
+      totalStock
+    };
+    sessionStorage.setItem('selectedProduct', JSON.stringify(productObj));
+  };
 
   return (
     <>
@@ -85,68 +127,66 @@ const ProductCard: React.FC<CustomProps> = ({
         <div
           className={`w-[${
             width || "24%"
-          }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all`}
+          }] ${classContainer} p-[1rem] my-[1rem] box-border border border-primary-deepRed border-opacity-[0.3] rounded-lg hover:shadow-lg transition-all group relative`}
+          tabIndex={0}
+          aria-label={`Product card for ${productName}`}
         >
-          <div className="flex items-center justify-between">
-            <div className="bg-primary-textColor text-white px-[.5rem] text-[.9rem] rounded-lg">NEW</div>
-            <div className="cursor-pointer text-primary-textColor">
-              <GoHeart className="hover:text-[red] transition-all-3s" size={30} />
+          <Link to={`/description/${id || 1}`} onClick={handleCardClick}>
+            <div className="relative flex justify-center items-center py-2 h-[300px]">
+              <img
+                src={img || productImg}
+                alt={productName || "Product"}
+                className="w-full h-full object-cover rounded-lg"
+              />
+              {/* NEW badge */}
+              {/* {isNew && <span className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded">NEW</span>} */}
             </div>
-          </div>
-
-          <Link to={`/description/${id || 1}`}>
-            <div className="flex justify-center items-center py-2">
-              <div className="py-2 h-[250px] w-full">
-                <img src={img || productImg} alt="Product" className="w-full h-full object-contain" />
-              </div>
-            </div>
-
-            <div className="text-[.85rem] text-[#555B62]">{productName || "Lip Stain"}</div>
             <div
-              className="font-serif text-[1.1rem] font-semibold text-[#000914] leading-[1.3rem] h-[20px]"
-              style={{
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: 1,
-              }}
+              className="text-[1.1rem] font-semibold text-[#000914] truncate"
+              title={productName}
             >
-              {description || "Intergalactic Lip Oil - Red"}
+              {productName || "__"}
             </div>
-            <div className="flex gap-[.7rem] text-[.88rem] py-[.5rem]">
-              <div className="font-semibold">{formatCurrency(price || 10000)}</div>
-              <div className="line-through decoration-1 text-gray-400">{formatCurrency(35)}</div>
-              <div className="text-red-500">(29% off)</div>
+            <div
+              className="font-serif text-[.85rem] line-clamp-2 text-[#555B62] leading-[1.3rem] h-[20px]"
+              title={description}
+            >
+              {description || "__"}
             </div>
-            <div className="flex gap-[.7rem] text-[.91rem]">
-              <div className="text-gray-500 font-300 border px-[.8rem] rounded-[3rem]">10g</div>
+            <div className="flex gap-[.7rem] text-[.88rem] py-[.5rem] items-center">
+              <div className="font-semibold">{formatCurrency(price || 0)}</div>
+              {discountPrice && (
+                <>
+                  <div className="line-through decoration-1 text-gray-400">
+                    {formatCurrency(discountPrice)}
+                  </div>
+                  <div className="text-red-500 text-xs">
+                    {discountPercent && `(${discountPercent}% off)`}
+                  </div>
+                </>
+              )}
+            </div>
+            {/* Stock status */}
+            {status && (
               <div className="flex items-center text-gray-500 font-300 border px-[.6rem] rounded-[3rem]">
-                <GoDotFill size={15} className="text-red-500" /> <div>Rose</div>
+                <GoDotFill size={15} className={statusColor} />
+                <div className="ml-1">{statusLabel}</div>
               </div>
-            </div>
+            )}
           </Link>
-
-          {/* Temporary debug info - remove after fixing */}
-          {(import.meta.env.MODE === "development") && (
-            <div className="text-xs text-gray-500 mb-2">
-              <div>ID: {id || "No ID"}</div>
-              <div>Auth: {isAuthenticated ? "Yes" : "No"}</div>
-              <div>Loading: {isAddingToCart ? "Yes" : "No"}</div>
-            </div>
-          )}
-
           <div className="mt-[1rem]">
             <CustomButton
               onClick={handleAddToCart}
               loading={isAddingToCart}
-              text={isAuthenticated ? "Add to Bag" : "Login to Add"}
-              classNames="hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem]"
+              text={isOutOfStock ? "Out of Stock" : isAuthenticated ? "Add to Bag" : "Login to Add"}
+              classNames={`hover:bg-primary-deepRed transition-all border border-primary-deepRed w-[100%] text-primary-deepRed hover:text-white px-[1.5rem] py-[.5rem] ${isOutOfStock ? 'opacity-60 cursor-not-allowed' : ''}`}
+              aria-label={isOutOfStock ? "Out of Stock" : isAuthenticated ? "Add to Bag" : "Login to Add"}
             />
           </div>
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

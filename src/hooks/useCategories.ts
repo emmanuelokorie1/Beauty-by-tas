@@ -11,3 +11,33 @@ export const useCategories = () => {
     },
   })
 }
+
+export const useBestSeller = () => {
+  return useQuery({
+    queryKey: ["best-selling"],
+    queryFn: async (): Promise<any> => {
+      const response = await axiosInstance.get("/product/best-selling")
+      return response.data || []
+    },
+  })
+}
+
+export const useAlmostSoldOut = () => {
+  return useQuery({
+    queryKey: ["almost-sold-out"],
+    queryFn: async (): Promise<any> => {
+      const response = await axiosInstance.get("/product/almost-sold-out")
+      return response.data || []
+    },
+  })
+}
+
+export const useNewProduct = () => {
+  return useQuery({
+    queryKey: ["new-product"],
+    queryFn: async (): Promise<any> => {
+      const response = await axiosInstance.get("/product/new")
+      return response.data || []
+    },
+  })
+}
