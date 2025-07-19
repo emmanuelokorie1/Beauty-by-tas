@@ -7,14 +7,10 @@ import HomeCarosel from "../../Components/HomeCarosel";
 import ProductCard from "../../Components/ProductCard";
 import ProductSwipper from "../../Components/ProductSwipper";
 
-import bestSeller1 from "../../assets/home/bestSelling1.svg";
-import bestSeller2 from "../../assets/home/bestSelling2.svg";
-import bestSeller3 from "../../assets/home/bestSelling3.svg";
-
-import skinCare from "../../assets/home/skinCare.svg";
-import bodyCare from "../../assets/home/bodyCare.svg";
-import giftSet from "../../assets/home/giftSet.svg";
-import addOns from "../../assets/home/addOns.svg";
+// import skinCare from "../../assets/home/skinCare.svg";
+// import bodyCare from "../../assets/home/bodyCare.svg";
+// import giftSet from "../../assets/home/giftSet.svg";
+// import addOns from "../../assets/home/addOns.svg";
 
 import Look from "../../assets/home/look.svg";
 import Look1 from "../../assets/home/look1.svg";
@@ -36,16 +32,11 @@ import {
 import Loading from "../../Components/Loading";
 import CategoryCard from "../../Components/CategoryCard";
 import { useNavigate } from "react-router-dom";
+import { images } from "../../constants";
 
 function Home() {
+  const { bestSeller1, bestSeller2, bestSeller3 } = images;
   const bestSeller = [bestSeller1, bestSeller2, bestSeller3];
-
-  const ExploreData = [
-    { img: skinCare, tab: "Body Care" },
-    { img: bodyCare, tab: "Lips Care" },
-    { img: giftSet, tab: "Gift Sets" },
-    { img: addOns, tab: "Add-Ons" },
-  ];
 
   const CommunityData = [
     { img: community1, tab: "Simple layering with @tomi_das" },
@@ -147,15 +138,7 @@ function Home() {
     <div>
       <HomeCarosel />
       <div className="containers ">
-        <div className=" flex justify-center py-[2rem]">
-          <div className="text-[#000914] md:w-[60%] sm:w-[80%] w-[100%] sm:text-[18px] text-[1rem] font-serif font-bold  text-center">
-            Modern, utilitarian, multifunctional skincare and cosmetic
-            essentials, designed to work seamlessly into your daily beauty
-            ritual.
-          </div>
-        </div>
-
-        <div>
+        <div className="py-[2rem]">
           <HeaderText title="Shop our Bestsellers" />
           {bestSellerLoader ? (
             <div className="flex justify-center items-center py-8">
@@ -171,7 +154,7 @@ function Home() {
         </div>
 
         <div className="mt-4">
-          <HeaderText title="Our New Products" />
+          <HeaderText title="Let’s Get Glazed" />
           {newProductLoader ? (
             <div className="flex justify-center items-center py-8">
               <Loading />
@@ -186,7 +169,7 @@ function Home() {
         </div>
 
         <div className=" pt-[2rem]">
-          <HeaderText title="Our Best-Selling Sets" />
+          <HeaderText title="Discover our best selling Lip Jelly Collection" />
 
           <div className="flex justify-between flex-nowrap items-center md:gap-4 gap-2 mt-[1rem] overflow-x-scroll custom-scrollbar  mb-[2rem]">
             {bestSeller?.map((e, index) => {
@@ -208,32 +191,30 @@ function Home() {
         </div>
       </div>
 
-      <section className="bg-primary-deepRed text-white grid md:grid-cols-2 grid-cols-1 py-[2rem] xl:px-[10rem] sm:px-[5rem] px-[2rem] ">
-        <aside className="text-center md:text-start mb-[1.2rem]">
-          <div className="font-bold">BEAUTY BY TAS</div>{" "}
-          <div className="font-bold text-[1.8rem] fontdm">
-            Intentionality meets body + lip care.
-          </div>
+      <section className="bg-white shadow-lg rounded-3xl border border-primary-deepRed flex flex-col md:flex-row items-stretch my-8 xl:mx-[5rem] sm:mx-12 mx-4 overflow-hidden transition-all duration-300">
+        <aside className="md:w-1/2 w-full flex items-center justify-center bg-gray-50 p-6 md:p-10">
+          <img
+            src={images?.textLogo}
+            alt="Beauty by TAS Logo"
+            className="w-full max-w-sm md:max-w-lg p-1 object-cover rounded-2xl shadow-md"
+          />
         </aside>
-        <aside>
-          <div className="text-[.9rem] ">
-            We believe that feeling glamorous shouldn't cost a fortune. Our
-            customers rely on us to help them feel beautiful without breaking
-            the bank.
+        <aside
+          className="md:w-1/2 w-full flex flex-col justify-center bg-primary-deepRed text-white px-6 md:px-12 py-8 md:py-12 text-center md:text-left"
+        >
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">Why Choose Beauty by TAS?</h2>
+          <div className="text-base md:text-lg mb-4">
+            We believe that feeling glamorous shouldn't cost a fortune. Our customers rely on us to help them feel beautiful without breaking the bank.
           </div>
-          <div className="text-[.9rem]" style={{ padding: "1rem 0" }}>
-            From makeup to accessories, we offer a wide range of top-notch
-            products at amazing prices. Come join us in celebrating beauty,
-            diversity, and empowerment.
+          <div className="text-base md:text-lg mb-6">
+            From makeup to accessories, we offer a wide range of top-notch products at amazing prices. Come join us in celebrating beauty, diversity, and empowerment.
           </div>
           <NavLink
             to="/about-us"
-            className=" flex items-center gap-[10px] hover:underline decoration-1 cursor-pointer text-[.9rem] "
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-primary-deepRed font-semibold shadow hover:bg-primary-deepRed hover:text-white border border-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-deepRed"
           >
-            <div>LEARN MORE ABOUT BEAUTY BY TAS</div>{" "}
-            <div>
-              <IoIosArrowForward />
-            </div>
+            <span>LEARN MORE ABOUT BEAUTY BY TAS</span>
+            <IoIosArrowForward />
           </NavLink>
         </aside>
       </section>

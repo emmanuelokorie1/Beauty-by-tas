@@ -19,9 +19,21 @@ export const useProduct = (productId?: string) => {
     queryKey: ["product", productId],
     queryFn: async () => {
       if (!productId) return null
-      const response = await axiosInstance.get(`/product/details/client/${productId}`)
+      const response = await axiosInstance.get(`product/details/${productId}`)
       return response.data?.results
     },
     enabled: !!productId,
   })
 }
+
+// export const useProduct = (productId?: string) => {
+//   return useQuery({
+//     queryKey: ["product", productId],
+//     queryFn: async () => {
+//       if (!productId) return null
+//       const response = await axiosInstance.get(`product/details/${productId}`)
+//       return response.data?.results
+//     },
+//     enabled: !!productId,
+//   })
+// }

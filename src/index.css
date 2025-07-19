@@ -196,6 +196,18 @@ body {
   border: 1px solid transparent;
 }
 
+@keyframes slide-vertical {
+  0% { transform: translateY(0%); }
+  40% { transform: translateY(0%); }
+  45% { transform: translateY(-50%); }
+  85% { transform: translateY(-50%); }
+  90% { transform: translateY(0%); }
+  100% { transform: translateY(0%); }
+}
+
+.animate-slide-vertical {
+  animation: slide-vertical 8s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
 
 
 @media screen and (min-width: 1500px) {

@@ -95,17 +95,9 @@ const ProductCard: React.FC<CustomProps> = ({
 
   // Store product in sessionStorage on card click
   const handleCardClick = () => {
-    const productObj = {
-      id,
-      productName,
-      price,
-      img,
-      description,
-      discountPrice,
-      stockStatus,
-      totalStock
-    };
-    sessionStorage.setItem('selectedProduct', JSON.stringify(productObj));
+    if (id) {
+      navigate(`/description/${id}`);
+    }
   };
 
   return (
@@ -131,7 +123,7 @@ const ProductCard: React.FC<CustomProps> = ({
           tabIndex={0}
           aria-label={`Product card for ${productName}`}
         >
-          <Link to={`/description/${id || 1}`} onClick={handleCardClick}>
+          <Link to="#" onClick={handleCardClick}>
             <div className="relative flex justify-center items-center py-2 h-[300px]">
               <img
                 src={img || productImg}
