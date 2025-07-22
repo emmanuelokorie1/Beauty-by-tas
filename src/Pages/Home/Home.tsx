@@ -35,20 +35,44 @@ import { useNavigate } from "react-router-dom";
 import { images } from "../../constants";
 
 function Home() {
-  const { bestSeller1, bestSeller2, bestSeller3 } = images;
+  const {
+    bestSeller1,
+    bestSeller2,
+    bestSeller3,
+    giftImg,
+    lipsBalm,
+    adsOn,
+    bodyOil,
+    lipCrayon,
+    lipJelly,
+    lipGloss,
+    lipOil,
+
+    // community1,
+  } = images;
   const bestSeller = [bestSeller1, bestSeller2, bestSeller3];
 
   const CommunityData = [
-    { img: community1, tab: "Simple layering with @tomi_das" },
+    {
+      img: community1,
+      tab: "Trying out the lip crayons",
+      link: "https://www.instagram.com/reel/DBQxYLdoO9i/?igsh=MTliZTRwN3doc2dzNQ==",
+    },
     {
       img: community2,
-      tab: "Step into the new month with your lips looking plump and ready to take on the world with just a dash of CHOCOLATTE!",
+      tab: "ChocoLatte served hot by Martha",
+      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=MXgxc202aHJiejRxag==",
     },
     {
       img: community3,
-      tab: "True friendship is sharing your lip gloss with your friend",
+      tab: "True friendship is in sharing your lip glosses",
+      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=MXgxc202aHJiejRxag==",
     },
-    { img: community4, tab: "Hello from a stunning #beautybytas queen💗🌟" },
+    {
+      img: community4,
+      tab: "Juicy Lips Activated with Tas",
+      link: "https://www.instagram.com/reel/DFV0hdLImKO/?igsh=MTE1NXN6aWNkaDl2ZA==",
+    },
   ];
 
   const getUniqueIdentifier = async () => {
@@ -73,7 +97,18 @@ function Home() {
   const { data: categories = [], isLoading: categoriesLoading } =
     useCategories();
 
-  console.log(categories);
+  // console.log(categories);
+
+  const extraCategory = {
+    categoryid: "0a7399b5-b1e2-4399-b148-47ee0724c1ad",
+    categoryname: "Lip Oil",
+    createdat: "2025-06-04 16:34:35",
+    productcount: 0,
+    status: true
+  };
+  
+  const allCategories = [...categories, extraCategory];
+  
 
   const CardData = Array?.isArray(bestSellerData?.data)
     ? bestSellerData?.data?.map((item: any, index: number) => {
@@ -199,15 +234,19 @@ function Home() {
             className="w-full max-w-sm md:max-w-lg p-1 object-cover rounded-2xl shadow-md"
           />
         </aside>
-        <aside
-          className="md:w-1/2 w-full flex flex-col justify-center bg-primary-deepRed text-white px-6 md:px-12 py-8 md:py-12 text-center md:text-left"
-        >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">Why Choose Beauty by TAS?</h2>
+        <aside className="md:w-1/2 w-full flex flex-col justify-center bg-primary-deepRed text-white px-6 md:px-12 py-8 md:py-12 text-center md:text-left">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">
+            Why Choose Beauty by TAS?
+          </h2>
           <div className="text-base md:text-lg mb-4">
-            We believe that feeling glamorous shouldn't cost a fortune. Our customers rely on us to help them feel beautiful without breaking the bank.
+            We believe that feeling glamorous shouldn't cost a fortune. Our
+            customers rely on us to help them feel beautiful without breaking
+            the bank.
           </div>
           <div className="text-base md:text-lg mb-6">
-            From makeup to accessories, we offer a wide range of top-notch products at amazing prices. Come join us in celebrating beauty, diversity, and empowerment.
+            From makeup to accessories, we offer a wide range of top-notch
+            products at amazing prices. Come join us in celebrating beauty,
+            diversity, and empowerment.
           </div>
           <NavLink
             to="/about-us"
@@ -235,15 +274,34 @@ function Home() {
       </div>
 
       <section className="containers pt-[2rem] pb-[1rem]">
-        <HeaderText title="Explore our collection" />
+        <HeaderText title="Find Your Match" />
         <aside className="grid md:grid-cols-4 grid-cols-2 md:gap-[2rem] gap-[1rem] py-[2rem]">
-          {Array?.isArray(categories) &&
-            categories?.map((item, index) => {
+          {Array?.isArray(allCategories) &&
+            allCategories?.map((item, index) => {
+              const { categoryname } = item;
               return (
                 <CategoryCard
                   key={index}
-                  img={bestSeller2}
-                  name={item?.categoryname}
+                  img={
+                    categoryname === "Gift"
+                      ? giftImg
+                      : categoryname === "Lip Balm"
+                      ? lipsBalm
+                      : categoryname === "Add-ons"
+                      ? adsOn
+                      : categoryname === "Body Oils"
+                      ? bodyOil
+                      : categoryname === "Lip Crayon"
+                      ? lipCrayon
+                      : categoryname === "Lip Jelly"
+                      ? lipJelly
+                      : categoryname === "Lip Gloss"
+                      ? lipGloss
+                      : categoryname === "Lip Oil"
+                      ? lipOil
+                      : bestSeller2
+                  }
+                  name={categoryname}
                   onClick={() => {
                     navigate("/shop");
                   }}
@@ -284,10 +342,15 @@ function Home() {
         <HeaderTextCenter text={"#Beautybytas community"} />
         <aside className="flex justify-between items-center flex-wrap py-[1.5rem]">
           {CommunityData?.map((item, index) => (
-            <div key={index} className="md:w-[24%] w-[48%] mb-[1rem] md:mb-0">
+            <a
+              href={item?.link}
+              target="_blank"
+              key={index}
+              className="md:w-[24%] w-[48%] mb-[1rem] md:mb-0 cursor-pointer"
+            >
               <div className="md:mb-2 mb-1">
                 <img
-                  src={item?.img || "/placeholder.svg"}
+                  src={item?.img}
                   alt={item?.tab}
                   className="w-[100%] h-[100%]"
                 />
@@ -303,7 +366,7 @@ function Home() {
               >
                 {item?.tab}
               </div>
-            </div>
+            </a>
           ))}
         </aside>
       </section>

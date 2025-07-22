@@ -1,8 +1,22 @@
-import { AiFillInstagram } from "react-icons/ai";
+import { AiFillInstagram, AiFillTikTok } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 
 function Footerr() {
+  const data = [
+    {
+      link: "https://www.instagram.com/beautybytas.co?igsh=MWl5cGd4bXlrem5mbg==",
+      Icon: AiFillInstagram
+    },
+    {
+      link: "https://x.com/beautybytas?s=21&t=xGYreIzgpLm9xl3R2RzjzA",
+      Icon: FaSquareXTwitter
+    },
+    {
+      link: "https://www.tiktok.com/@beautybytas.co?_t=ZM-8xyhdbXaaL2&_r=1",
+      Icon: AiFillTikTok
+    },
+  ];
   return (
     <div className="bg-primary-background pxMedia pb-[6rem] md:pb-0">
       <section className="sm:flex justify-between border-t-[1px] border-gray-300 py-[1rem] ">
@@ -30,15 +44,14 @@ function Footerr() {
         </aside>
 
         <aside className="flex justify-center sm:justify-end gap-[2rem] items-center">
-          <div>
-            <FaFacebook color={"#000914"} size={30} />
-          </div>
-          <div>
-            <AiFillInstagram color={"#000914"} size={30} />
-          </div>
-          <div>
-            <FaSquareXTwitter color={"#000914"} size={30} />
-          </div>
+          {data?.map((e, i) => {
+            return (
+              <a href={e?.link} target="_blank" key={i}>
+                <e.Icon color={"#000914"} size={30} />
+              </a>
+            );
+          })}
+
         </aside>
       </section>
     </div>

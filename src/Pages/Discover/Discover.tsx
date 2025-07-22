@@ -21,6 +21,7 @@ import trendImage2 from "../../assets/discover/hero-discover.avif"
 import blogImage1 from "../../assets/discover/blog1.avif"
 import blogImage2 from "../../assets/discover/blog2.avif"
 import blogImage3 from "../../assets/discover/blog3.avif"
+import { images } from "../../constants"
 
 function Discover() {
   const [activeTab, setActiveTab] = useState("All")
@@ -159,13 +160,11 @@ function Discover() {
         <div className="absolute inset-0 bg-black/20"></div>
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage || "/placeholder.svg?height=600&width=1200"})` }}
+          style={{ backgroundImage: `url(${images?.discoverBeauty})` }}
         ></div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="fontdm text-4xl md:text-6xl font-bold mb-4">Discover Beauty</h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-            Explore tutorials, trends, and tips to unlock your beauty potential
-          </p>
+          <h1 className="fontdm text-4xl md:text-6xl font-bold mb-4">Discover</h1>
+          {/* <p cl  */}
           <CustomButton
             text="Start Exploring"
             classNames="bg-primary-deepRed text-white px-8 py-3 text-lg hover:bg-opacity-90 transition-all"
