@@ -23,14 +23,14 @@ function Description() {
 
   return (
     <ProductDecriptions
-      productName={product.productName}
-      description={product.description}
-      price={product.price}
-      img={product.images?.[0]}
-      benefits={product.benefits}
-      howtouse={product.howtouse}
-      ingredients={product.ingredients}
-      totalStock={product.totalStock}
+      // productName={product.productName}
+      // description={product.description}
+      // price={product.price}
+      // img={product.images?.[0]}
+      // benefits={product.benefits}
+      // howtouse={product.howtouse}
+      // ingredients={product.ingredients}
+      // totalStock={product.totalStock}
     />
   );
 }
