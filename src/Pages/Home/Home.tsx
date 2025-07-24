@@ -12,7 +12,7 @@ import ProductSwipper from "../../Components/ProductSwipper";
 // import giftSet from "../../assets/home/giftSet.svg";
 // import addOns from "../../assets/home/addOns.svg";
 
-import Look from "../../assets/home/look.svg";
+// import Look from "../../assets/home/look.svg";
 import Look1 from "../../assets/home/look1.svg";
 import Look2 from "../../assets/home/look2.svg";
 
@@ -47,6 +47,8 @@ function Home() {
     lipJelly,
     lipGloss,
     lipOil,
+
+    look,
 
     // community1,
   } = images;
@@ -104,11 +106,10 @@ function Home() {
     categoryname: "Lip Oil",
     createdat: "2025-06-04 16:34:35",
     productcount: 0,
-    status: true
+    status: true,
   };
-  
+
   const allCategories = [...categories, extraCategory];
-  
 
   const CardData = Array?.isArray(bestSellerData?.data)
     ? bestSellerData?.data?.map((item: any, index: number) => {
@@ -315,12 +316,11 @@ function Home() {
         <HeaderText title="Shop the look" />
         <div className="s1100:flex justify-between items-center ">
           <aside className="s1100:w-[40%] w-[100%] s1100:block flex justify-center">
-            {" "}
-            <div className="md:w-[650px] xl:w-[650px] s1100:w-[500px] w-[100%] ">
+            <div className="md:w-[650px] h-[470px] xl:w-[650px] s1100:w-[500px] w-[100%] ">
               <img
-                src={Look || "/placeholder.svg"}
+                src={look || "/placeholder.svg"}
                 alt="logo"
-                className="w-[100%]"
+                className="w-[100%] h-[100%] object-cover rounded-lg"
               />
             </div>
           </aside>
@@ -355,15 +355,7 @@ function Home() {
                   className="w-[100%] h-[100%]"
                 />
               </div>
-              <div
-                className="border md:leading-[2rem] leading-[1.3rem] md:h-[80px] h-[50px] flex justify-center items-center w-full text-center md:text-[1.1rem] text-[.8rem] rounded-lg uppercase p-2 md:mt-[1rem] mt-[.5rem]"
-                style={{
-                  overflow: "hidden",
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 2,
-                }}
-              >
+              <div className="border md:leading-[2rem] line-clamp-2 leading-[1.3rem] md:h-[80px] h-[50px] flex justify-center items-center w-full text-center md:text-[1.1rem] text-[.8rem] rounded-lg uppercase p-2 md:mt-[1rem] mt-[.5rem]">
                 {item?.tab}
               </div>
             </a>

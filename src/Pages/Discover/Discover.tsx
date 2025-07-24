@@ -377,7 +377,7 @@ function Discover() {
       {/* Newsletter Signup */}
       <section className="bg-gradient-to-r from-primary-deepRed to-pink-600 text-white py-16">
         <div className="containers text-center">
-          <h2 className="fontdm text-3xl md:text-4xl font-bold mb-4">Stay in the Beauty Loop</h2>
+          <h2 className="fontdm text-3xl md:text-4xl font-bold mb-4">Stay in the Loop</h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
             Get the latest beauty tips, tutorials, and exclusive content delivered to your inbox
           </p>

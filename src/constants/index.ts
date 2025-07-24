@@ -13,6 +13,10 @@ import lipGloss from "../assets/dummy/lipGloss.jpg";
 import lipOil from "../assets/dummy/lipOil.jpg";
 import discoverBeauty from "../assets/dummy/discoverBeauty.jpg";
 import community1 from "../assets/dummy/community1.jpeg";
+import look from "../assets/dummy/look.jpg";
+import ourStory from "../assets/dummy/ourStory.jpg";
+import founder from "../assets/dummy/founder.jpg";
+import ourCore from "../assets/dummy/ourCore.jpg";
 // import lipOil from "../assets/dummy/";
 
 export const images = {
@@ -30,6 +34,11 @@ export const images = {
   lipJelly,
   lipGloss,
   lipOil,
+
+  look,
+  ourStory,
+  founder,
+  ourCore,
 
   discoverBeauty,
 

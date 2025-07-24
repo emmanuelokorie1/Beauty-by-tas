@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import CustomButton from "../../Components/CustomButton";
-import HeaderText from "../../Components/HeaderText";
+// import HeaderText from "../../Components/HeaderText";
 import { FaInstagram, FaTwitter, FaFacebookF, FaTiktok } from "react-icons/fa";
 
 // Import placeholder images - replace with actual images
-import heroImage from "../../assets/about/story1.avif";
-import founderImage from "../../assets/about/story1.avif";
-import storyImage1 from "../../assets/about/story1.avif";
-import storyImage2 from "../../assets/about/story2.avif";
+// import heroImage from "../../assets/about/story1.avif";
+// import founderImage from "../../assets/about/story1.avif";
+// import storyImage1 from "../../assets/about/story1.avif";
+// import storyImage2 from "../../assets/about/story2.avif";
 import valuesImage from "../../assets/about/values.avif";
 import teamMember1 from "../../assets/about/team2.avif";
 import teamMember2 from "../../assets/about/team2.avif";
@@ -21,6 +21,11 @@ import sustainabilityImage from "../../assets/about/sustainability.avif";
 import testimonialImage1 from "../../assets/about/testimonial2.avif";
 import testimonialImage2 from "../../assets/about/testimonial2.avif";
 import testimonialImage3 from "../../assets/about/testimonial3.avif";
+import { images } from "../../constants";
+import { AiFillInstagram, AiFillTikTok } from "react-icons/ai";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import { data } from "../../constants/data";
+import HeaderText from "../../Components/HeaderText";
 
 function About() {
   const [activeTab, setActiveTab] = useState("Our Story");
@@ -65,27 +70,27 @@ function About() {
   const testimonials = [
     {
       id: 1,
-      name: "Jessica M.",
+      name: "Treasure",
       image: testimonialImage1,
       quote:
-        "BeautyByTas products have transformed my makeup routine. The quality is exceptional, and I love supporting a brand that celebrates diversity.",
-      location: "New York, NY",
+        "I use beautybytas products because they are made with love. It’s very evident, from the products that are effective and friendly to my skin, to the intention and hardwork that goes into the aesthetics and branding of the company, and the way they keep things innovative, constantly bringing out new products and lines",
+      location: "Lagos Nigeria",
     },
     {
       id: 2,
-      name: "Olivia T.",
+      name: "Feyi",
       image: testimonialImage2,
       quote:
-        "I've never found lip products that work as well for my skin tone until I discovered BeautyByTas. Now I'm a customer for life!",
-      location: "Atlanta, GA",
+        "it’s not news that i love your products and how intentional you are about packaging. Your gloss is so gentle on the lips and it doesn’t make my lips chapped like other glosses and i love how the lip scrub is not harsh and doesn’t give reactions",
+      location: "Lagos Nigeria",
     },
     {
       id: 3,
-      name: "Michelle K.",
+      name: "Zainab",
       image: testimonialImage3,
       quote:
-        "Not only are the products amazing, but I love the brand's commitment to sustainability and ethical practices. Beauty with a conscience!",
-      location: "Los Angeles, CA",
+        "I'm sorry this is coming late but I just want to say Thank you for delivering Quality.I have been so in love with your lip scrub and balm that I have told almost all my friends",
+      location: "Lagos Nigeria",
     },
   ];
 
@@ -135,19 +140,17 @@ function About() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${
-              heroImage || "/placeholder.svg?height=600&width=1200"
-            })`,
+            backgroundImage: `url(${images.ourStory})`,
           }}
         ></div>
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="fontdm text-4xl md:text-6xl font-bold mb-4">
             Our Story
           </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+          {/* <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             BeautyByTas was born from a passion for beauty and a commitment to
             inclusivity
-          </p>
+          </p> */}
         </div>
       </section>
 
@@ -175,10 +178,7 @@ function About() {
             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
               <div>
                 <img
-                  src={
-                    founderImage ||
-                    "/placeholder.svg?height=400&width=400&query=beauty+founder"
-                  }
+                  src={images.founder}
                   alt="Founder"
                   className="rounded-lg shadow-lg w-full"
                 />
@@ -188,20 +188,17 @@ function About() {
                   Meet Our Founder
                 </h2>
                 <p className="text-gray-700 mb-4">
-                  BeautyByTas was founded by Tasleema Lateef in 2018 with a
-                  simple yet powerful vision: to create beauty products that
-                  truly work for everyone.
+                  Beautybytas.co was founded in 2020 by Taslemat Yusuf.
+                  Frustrated by harsh lip care products, she started creating
+                  her own gentle, effective solutions. What began as a personal
+                  quest for kinder beauty quickly grew into a beloved brand
                 </p>
                 <p className="text-gray-700 mb-4">
-                  After years of struggling to find makeup that complemented her
-                  skin tone, Tasleema decided to create her own solution. What
-                  began as a small collection of lip products has grown into a
-                  comprehensive beauty brand loved by thousands.
-                </p>
-                <p className="text-gray-700">
-                  "I believe beauty should be accessible, inclusive, and
-                  empowering. Every product we create is designed with this
-                  philosophy at its core." - Tasleema Lateef
+                  Beauty and body care should be accessible, inclusive, and
+                  empowering. It should work without harming the environment or
+                  our skin," says Taslemat. This philosophy is at the heart of
+                  every product we make, ensuring beautiful results that align
+                  with your values.
                 </p>
               </div>
             </div>
@@ -211,63 +208,91 @@ function About() {
                 Our Journey
               </h2>
               <div className="relative">
-                {/* Timeline */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary-deepRed"></div>
+                {/* Timeline vertical line: left on mobile, center on md+ */}
+                <div className="absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2 h-full w-1 bg-primary-deepRed"></div>
 
                 {/* Timeline Items */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-                  {/* 2018 */}
-                  <div className="md:text-right md:pr-12 pt-8">
-                    <div className="md:hidden absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                  {/* 2020 */}
+                  <div className="md:text-right pl-12 md:pr-12 pt-8 relative">
+                    {/* Dot for mobile */}
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    {/* Dot for desktop */}
                     <div className="hidden md:block absolute right-0 top-10 transform translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
-                    <h3 className="text-xl font-bold mb-2">2018</h3>
+                    <h3 className="text-xl font-bold mb-2">2020</h3>
                     <p className="text-gray-700">
-                      BeautyByTas launches with a collection of 5 lip products
-                      designed for diverse skin tones.
+                      Started our journey with a Yoruba goddess themed lip gloss
+                      collection and our Lip balm
                     </p>
                   </div>
-                  <div className="md:pl-12 md:pt-8"></div>
-
-                  {/* 2019 */}
-                  <div className="md:text-right md:pr-12"></div>
-                  <div className="md:pl-12 pt-8">
-                    <div className="md:hidden absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
-                    <div className="hidden md:block absolute left-0 top-10 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
-                    <h3 className="text-xl font-bold mb-2">2019</h3>
-                    <p className="text-gray-700">
-                      Expanded to include face products and gained recognition
-                      for our inclusive shade range.
-                    </p>
-                  </div>
+                  <div className="pl-12 md:pt-8"></div>
 
                   {/* 2021 */}
-                  <div className="md:text-right md:pr-12 pt-8">
-                    <div className="md:hidden absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
-                    <div className="hidden md:block absolute right-0 top-10 transform translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                  <div className="md:text-right md:pr-12 relative"></div>
+                  <div className="pl-12 pt-8 relative">
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <div className="hidden md:block absolute left-0 top-10 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
                     <h3 className="text-xl font-bold mb-2">2021</h3>
                     <p className="text-gray-700">
-                      Introduced our sustainable packaging initiative and
-                      expanded to international markets.
+                      Launched the body soufflé and body Polish
                     </p>
                   </div>
-                  <div className="md:pl-12 md:pt-8"></div>
+
+                  {/* 2022 */}
+                  <div className="md:text-right md:pr-12 pl-12 pt-8 relative">
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <div className="hidden md:block absolute right-0 top-10 transform translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <h3 className="text-xl font-bold mb-2">2022</h3>
+                    <p className="text-gray-700">
+                      Introduced our Lip Oils and Body Oils to the collection of
+                      products
+                    </p>
+                  </div>
+                  <div className="pl-12 md:pt-8"></div>
 
                   {/* 2023 */}
-                  <div className="md:text-right md:pr-12"></div>
-                  <div className="md:pl-12 pt-8">
-                    <div className="md:hidden absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                  <div className="md:text-right md:pr-12 relative"></div>
+                  <div className="pl-12 pt-8 relative">
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
                     <div className="hidden md:block absolute left-0 top-10 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
                     <h3 className="text-xl font-bold mb-2">2023</h3>
                     <p className="text-gray-700">
-                      Celebrated our 5-year anniversary with the launch of our
-                      most innovative products yet.
+                      We upgraded our packaging, reducing the usage of stickers
+                      on our lip products.
+                    </p>
+                  </div>
+
+                  {/* 2024 */}
+                  <div className="md:text-right md:pr-12 pl-12 pt-8 relative">
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <div className="hidden md:block absolute right-0 top-10 transform translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <h3 className="text-xl font-bold mb-2">2024</h3>
+                    <p className="text-gray-700">
+                      We hosted our first community event , “Gloss and Glaze”,
+                      collaborated with Aya Care.ng to give out sanitary pads to
+                      our community . We also expanded our community outreach by
+                      popping up in events such as the Zikoko Hertitude event,
+                      Ashluxury Sunday market and many more
+                    </p>
+                  </div>
+                  <div className="pl-12 md:pt-8"></div>
+
+                  {/* 2025 */}
+                  <div className="md:text-right md:pr-12 relative"></div>
+                  <div className="pl-12 pt-8 relative">
+                    <div className="md:hidden absolute left-4 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <div className="hidden md:block absolute left-0 top-10 transform -translate-x-1/2 w-4 h-4 rounded-full bg-primary-deepRed"></div>
+                    <h3 className="text-xl font-bold mb-2">2025</h3>
+                    <p className="text-gray-700">
+                      Celebrated our fifth year anniversary and got our name
+                      trademarked
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <img
                   src={
@@ -288,7 +313,7 @@ function About() {
                   className="rounded-lg shadow-lg w-full"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 
@@ -310,10 +335,7 @@ function About() {
             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
               <div>
                 <img
-                  src={
-                    valuesImage ||
-                    "/placeholder.svg?height=500&width=500&query=beauty+values"
-                  }
+                  src={images.ourCore}
                   alt="Our Values"
                   className="rounded-lg shadow-lg w-full"
                 />
@@ -343,9 +365,11 @@ function About() {
                 Our Mission
               </h3>
               <p className="text-xl text-center text-gray-700 italic max-w-3xl mx-auto">
-                "To empower individuals to express their unique beauty through
-                high-quality, inclusive products that celebrate diversity and
-                respect our planet."
+                "To empower your beauty journey with effective, handmade
+                products crafted with care. We are dedicated to providing
+                accessible, inclusive, and gentle beauty solutions that not only
+                enhance your natural glow but also align with your values,
+                ensuring no harm to your skin or the environment"
               </p>
             </div>
           </div>
@@ -427,22 +451,20 @@ function About() {
                   effective, safe, and ethically sourced.
                 </p>
                 <p className="text-gray-700 mb-4">
-                  Our formulations are free from harmful chemicals including
-                  parabens, sulfates, phthalates, and synthetic fragrances. We
+                  Our formulations are free from harmful chemicals and we
                   prioritize natural, plant-based ingredients that deliver
-                  results without compromising your health or the environment.
+                  results without compromising your health or the environment
                 </p>
                 <p className="text-gray-700">
-                  Every ingredient serves a purpose—whether it's to nourish,
+                  Every ingredient serves a purpose-whether it's to nourish,
                   protect, or enhance. We never add fillers or unnecessary
-                  components to our formulations.
+                  components to our formulations
                 </p>
               </div>
               <div>
                 <img
                   src={
-                    ingredientsImage ||
-                    "/placeholder.svg?height=500&width=500&query=natural+ingredients"
+                    images?.bestSeller3
                   }
                   alt="Our Ingredients"
                   className="rounded-lg shadow-lg w-full"
@@ -577,38 +599,13 @@ function About() {
             tutorials, and beauty inspiration.
           </p>
           <div className="flex justify-center gap-6 mt-6">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-100 p-3 rounded-full hover:bg-primary-deepRed hover:text-white transition-colors"
-            >
-              <FaInstagram size={24} />
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-100 p-3 rounded-full hover:bg-primary-deepRed hover:text-white transition-colors"
-            >
-              <FaTwitter size={24} />
-            </a>
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-100 p-3 rounded-full hover:bg-primary-deepRed hover:text-white transition-colors"
-            >
-              <FaFacebookF size={24} />
-            </a>
-            <a
-              href="https://tiktok.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-100 p-3 rounded-full hover:bg-primary-deepRed hover:text-white transition-colors"
-            >
-              <FaTiktok size={24} />
-            </a>
+            {data?.socials?.map((e, i) => {
+              return (
+                <a href={e?.link} target="_blank" key={i}>
+                  <e.Icon color={"#000914"} size={30} />
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -624,10 +621,16 @@ function About() {
             designed to help you express your unique beauty.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <CustomButton
-              text="Shop Now"
-              classNames="bg-white text-primary-deepRed px-8 py-3 hover:bg-gray-100 transition-all font-semibold"
-            />
+            <NavLink
+              to="/shop"
+              className="inline-flex items-center justify-center"
+            >
+              <CustomButton
+                text="Shop Now"
+                classNames="bg-white text-primary-deepRed px-8 py-3 hover:bg-gray-100 transition-all font-semibold"
+              />
+            </NavLink>
+
             <NavLink
               to="/contact-us"
               className="inline-flex items-center justify-center"
