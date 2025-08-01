@@ -174,7 +174,7 @@ function Home() {
     <div>
       <HomeCarosel />
       <div className="containers ">
-        <div className="py-[2rem]">
+        {/* <div className="py-[2rem]">
           <HeaderText title="Shop our Bestsellers" />
           {bestSellerLoader ? (
             <div className="flex justify-center items-center py-8">
@@ -187,7 +187,7 @@ function Home() {
           ) : (
             <ProductSwipper data={CardData} />
           )}
-        </div>
+        </div> */}
 
         <div className="mt-4">
           <HeaderText title="Let’s Get Glazed" />
