@@ -76,6 +76,7 @@ function Cart() {
       productName={item.categoryname}
       price={item.price}
       img={item.images?.[0]}
+      totalStock={item.totalStock}
     />
   ))
 

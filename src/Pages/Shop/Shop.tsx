@@ -110,6 +110,7 @@ function Shop() {
                 price={product?.price}
                 loading={false}
                 img={product?.images?.[0]}
+                totalStock={product?.totalStock}
               />
             </div>
           ))

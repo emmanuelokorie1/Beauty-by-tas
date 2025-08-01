@@ -18,28 +18,28 @@ function HomeCarosel() {
       img: images?.homeSlider,
     },
   ];
-  
+
   const navigate = useNavigate();
 
   const router = () => {
     navigate("/shop");
-  }
+  };
 
   return (
     <div
-      className="h-[75vh] 2xl:h-[30vh] flex items-center overflow-hidden"
+      className="h-[90vh] flex items-center overflow-hidden"
       style={{ background: "linear-gradient(90deg,  #E6D3D2 0%, #FDA551 80%)" }}
     >
       <Carousel
         style={{ width: "100%" }}
         autoPlay={true}
         showArrow="hover"
-        className="flex items-center "
+        className="flex items-center h-full"
       >
         {Data.map((e, index) => (
           <div key={index} className="flex items-center h-full overflow-hidden">
-            <div className="md:py-1 py-[1rem] md:flex justify-between items-center w-full">
-<div className="md:w-[45%] w-full lg:ps-[6rem] s900:ps-[4rem] sm:ps-[2rem] md:pe-0 px-[1rem] pt-40 sm:pt-36 md:pt-28 lg:pt-20">
+            <div className="md:py-1 py-[1rem] md:flex flex-col md:flex-row justify-between items-center w-full h-full">
+              <div className="md:w-[45%] w-full lg:ps-[6rem] s900:ps-[4rem] sm:ps-[2rem] md:pe-0 px-[1rem] pt-20 sm:pt-16 md:pt-28 lg:pt-20 md:pb-0 pb-8">
                 <div className="s1100:text-[2.8rem] xl:text-[3rem] s900:text-[2.5rem] md:text-[2rem] sm:text-[1.8rem] text-[1.6rem] font-bold text-primary-textColor font-serif">
                   {e?.headerTag}
                 </div>
@@ -50,11 +50,15 @@ function HomeCarosel() {
                 <CustomButton
                   text={"SHOP NOW"}
                   onClick={router}
-classNames="bg-[#752C49] text-white px-[1.5rem] py-3 pb-4 sm:pb-2"
+                  classNames="bg-[#752C49] text-white px-[1.5rem] py-3 pb-4 sm:pb-2"
                 />
               </div>
-              <div className="md:w-[55%] w-full flex justify-center overflow-hidden">
-                <img src={e?.img} className="w-[60%] h-[600px] object-cover rounded-2xl" />
+              <div className="md:w-[55%] w-full flex justify-center items-center overflow-hidden md:mt-0 mt-[1rem] md:mb-0 mb-8">
+                <img
+                  src={e?.img}
+                  className="md:w-[60%] w-[85%] md:h-[600px] h-[300px] sm:h-[350px] object-cover rounded-2xl shadow-lg"
+                  alt="Beauty and Bodycare"
+                />
               </div>
             </div>
           </div>

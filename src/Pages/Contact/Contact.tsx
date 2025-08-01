@@ -4,6 +4,7 @@ import InputLabel from "../../Components/InputLabel";
 import image from "../../assets/contact/contact.png";
 import CustomButton from "../../Components/CustomButton";
 import { Link } from "react-router-dom";
+import { data } from "../../constants/data";
 
 function Contact() {
   const [isChecked, setIsChecked] = useState(false);
@@ -15,7 +16,7 @@ function Contact() {
             <div className="fontdm text-[2rem]">Get in touch</div>
             <div className="text-[1rem] text-gray-600">
               Our friendly team would love to hear from you. You can reach us
-              anytime via <span className="font-bold">hi@beautybytas.com</span>
+              anytime via <span className="font-bold">{data?.email}</span>
             </div>
           </div>
 

@@ -35,6 +35,10 @@ import { useNavigate } from "react-router-dom";
 import { images } from "../../constants";
 
 function Home() {
+  // Debug: Log the images object to see what's available
+  console.log("Images object:", images);
+  console.log("textLogo value:", images?.textLogo);
+
   const {
     bestSeller1,
     bestSeller2,
@@ -91,7 +95,7 @@ function Home() {
   };
 
   // Using TanStack Query to fetch categories
-  const { data: bestSellerData, isLoading: bestSellerLoader } = useBestSeller();
+  // const { data: bestSellerData, isLoading: bestSellerLoader } = useBestSeller();
   const { data: newProductData, isLoading: newProductLoader } = useNewProduct();
   const { data: almostSoldOutData, isLoading: almostSoldOutLoader } =
     useAlmostSoldOut();
@@ -111,22 +115,23 @@ function Home() {
 
   const allCategories = [...categories, extraCategory];
 
-  const CardData = Array?.isArray(bestSellerData?.data)
-    ? bestSellerData?.data?.map((item: any, index: number) => {
-        return (
-          <ProductCard
-            key={index}
-            width="100%"
-            img={item?.images && item?.images[0]}
-            loading={bestSellerLoader}
-            description={item?.description}
-            productName={item?.productName}
-            price={item?.price}
-            id={item?.categoryId}
-          />
-        );
-      })
-    : [];
+  // const CardData = Array?.isArray(bestSellerData?.data)
+  //   ? bestSellerData?.data?.map((item: any, index: number) => {
+  //       return (
+  //         <ProductCard
+  //           key={index}
+  //           width="100%"
+  //           img={item?.images && item?.images[0]}
+  //           loading={bestSellerLoader}
+  //           description={item?.description}
+  //           productName={item?.productName}
+  //           price={item?.price}
+  //           id={item?.categoryId}
+  //           totalStock={item?.totalStock}
+  //         />
+  //       );
+  //     })
+  //   : [];
 
   const almostSoldOutCardData = Array?.isArray(almostSoldOutData?.data)
     ? almostSoldOutData?.data?.map((item: any, index: number) => {
@@ -139,7 +144,7 @@ function Home() {
             description={item?.description}
             productName={item?.productName}
             price={item?.price}
-            id={item?.categoryId}
+            id={item?.productId}
             stockStatus={item?.stockStatus}
             totalStock={item?.totalStock}
           />
@@ -158,11 +163,14 @@ function Home() {
             description={item?.description}
             productName={item?.productName}
             price={item?.price}
-            id={item?.categoryId}
+            id={item?.productId}
+            totalStock={item?.totalStock}
           />
         );
       })
     : [];
+
+  console.log(newProductData);
 
   const navigate = useNavigate();
 
@@ -227,35 +235,91 @@ function Home() {
         </div>
       </div>
 
-      <section className="bg-white shadow-lg rounded-3xl border border-primary-deepRed flex flex-col md:flex-row items-stretch my-8 xl:mx-[5rem] sm:mx-12 mx-4 overflow-hidden transition-all duration-300">
-        <aside className="md:w-1/2 w-full flex items-center justify-center bg-gray-50 p-6 md:p-10">
-          <img
-            src={images?.textLogo}
-            alt="Beauty by TAS Logo"
-            className="w-full max-w-sm md:max-w-lg p-1 object-cover rounded-2xl shadow-md"
-          />
+      <section className="shadow-xl rounded-3xl border border-primary-deepRed/20 flex flex-col md:flex-row my-12 xl:mx-[5rem] sm:mx-12 mx-4 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] group">
+        <aside className="md:w-1/2 w-full flex items-center justify-center p-4 md:p-6 lg:p-8 relative h-[250px] md:h-[350px] lg:h-[400px] overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50">
+          <div className="relative z-20 w-full h-full flex items-center justify-center">
+            <div className="w-[200px] h-[200px] md:w-[250px] md:h-[280px] lg:w-[380px] lg:h-[280px] flex items-center justify-center">
+              {images?.textLogo ? (
+                <img
+                  src={images.textLogo}
+                  alt="Beauty by TAS Logo"
+                  className="w-full h-full object-contain rounded-xl transform group-hover:scale-105 transition-transform duration-300"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  onLoad={() =>
+                    console.log("Image loaded successfully:", images.textLogo)
+                  }
+                  onError={(e) => {
+                    console.error("Image failed to load:", images.textLogo);
+                    console.error("Error details:", e);
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-gray-500 p-4 text-center">
+                  <div className="text-4xl mb-2">🛍️</div>
+                  <div className="text-sm font-medium">Beauty by TAS</div>
+                  <div className="text-xs opacity-75">Logo</div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Decorative cream background elements */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full -translate-x-16 -translate-y-16"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-amber-100 to-orange-100 rounded-full translate-x-12 translate-y-12"></div>
+            <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-br from-amber-50 to-orange-50 rounded-full opacity-60"></div>
+          </div>
         </aside>
-        <aside className="md:w-1/2 w-full flex flex-col justify-center bg-primary-deepRed text-white px-6 md:px-12 py-8 md:py-12 text-center md:text-left">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">
-            Why Choose Beauty by TAS?
-          </h2>
-          <div className="text-base md:text-lg mb-4">
-            We believe that feeling glamorous shouldn't cost a fortune. Our
-            customers rely on us to help them feel beautiful without breaking
-            the bank.
+
+        <aside className="md:w-1/2 w-full flex flex-col justify-center bg-gradient-to-br from-primary-deepRed to-primary-deepRed/90 text-white px-8 md:px-12 py-10 md:py-12 text-center md:text-left relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+          
+          <div className="relative z-10">
+            <h2 className="text-2xl md:text-4xl font-bold mb-6 tracking-tight leading-tight">
+              Why Choose{" "}
+              <span className="text-primary-color">Beauty by TAS</span>?
+            </h2>
+
+            <div className="space-y-4 mb-8">
+              <p className="text-base md:text-lg leading-relaxed opacity-95">
+                We believe that feeling glamorous shouldn't cost a fortune. Our
+                customers rely on us to help them feel beautiful without
+                breaking the bank.
+              </p>
+              <p className="text-base md:text-lg leading-relaxed opacity-95">
+                From makeup to accessories, we offer a wide range of top-notch
+                products at amazing prices. Come join us in celebrating beauty,
+                diversity, and empowerment.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-center md:items-start">
+              <NavLink
+                to="/about-us"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white text-primary-deepRed font-semibold shadow-lg hover:bg-primary-deepRed hover:text-white border-2 border-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/30 transform hover:scale-105 group/btn"
+              >
+                <span className="text-sm md:text-base">
+                  LEARN MORE ABOUT US
+                </span>
+                <IoIosArrowForward className="transition-transform duration-300 group-hover/btn:translate-x-1" />
+              </NavLink>
+
+              <NavLink
+                to="/shop"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-transparent text-white font-semibold border-2 border-white/50 hover:border-white hover:bg-white/10 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/30"
+              >
+                <span className="text-sm md:text-base">SHOP NOW</span>
+              </NavLink>
+            </div>
           </div>
-          <div className="text-base md:text-lg mb-6">
-            From makeup to accessories, we offer a wide range of top-notch
-            products at amazing prices. Come join us in celebrating beauty,
-            diversity, and empowerment.
-          </div>
-          <NavLink
-            to="/about-us"
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-primary-deepRed font-semibold shadow hover:bg-primary-deepRed hover:text-white border border-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-deepRed"
-          >
-            <span>LEARN MORE ABOUT BEAUTY BY TAS</span>
-            <IoIosArrowForward />
-          </NavLink>
         </aside>
       </section>
 
@@ -277,7 +341,29 @@ function Home() {
       <section className="containers pt-[2rem] pb-[1rem]">
         <HeaderText title="Find Your Match" />
         <aside className="grid md:grid-cols-4 grid-cols-2 md:gap-[2rem] gap-[1rem] py-[2rem]">
-          {Array?.isArray(allCategories) &&
+          {categoriesLoading ? (
+            // Loading skeleton for category cards
+            Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 animate-pulse"
+              >
+                {/* Image skeleton */}
+                <div className="relative aspect-square bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                </div>
+                
+                {/* Content skeleton */}
+                <div className="p-4">
+                  <div className="h-4 bg-gray-200 rounded-lg mb-2 animate-pulse"></div>
+                  <div className="h-3 bg-gray-100 rounded w-3/4 animate-pulse"></div>
+                </div>
+                
+                {/* Shimmer effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer"></div>
+              </div>
+            ))
+          ) : Array?.isArray(allCategories) ? (
             allCategories?.map((item, index) => {
               const { categoryname } = item;
               return (
@@ -308,7 +394,15 @@ function Home() {
                   }}
                 />
               );
-            })}
+            })
+          ) : (
+            // Empty state
+            <div className="col-span-full flex flex-col items-center justify-center py-12 text-gray-500">
+              <div className="text-6xl mb-4">🛍️</div>
+              <h3 className="text-xl font-semibold mb-2">No Categories Available</h3>
+              <p className="text-sm text-gray-400">Check back later for our product categories</p>
+            </div>
+          )}
         </aside>
       </section>
 
@@ -329,10 +423,10 @@ function Home() {
             style={{ gap: "1.5rem" }}
           >
             <div className="sm:w-[50%] w-[100%]">
-              <ProductCard width="100%" img={Look1} />
+              <ProductCard width="100%" img={Look1} totalStock={0} />
             </div>
             <div className="sm:w-[50%] w-[100%]">
-              <ProductCard width="100%" img={Look2} />
+              <ProductCard width="100%" img={Look2} totalStock={0} />
             </div>
           </aside>
         </div>
