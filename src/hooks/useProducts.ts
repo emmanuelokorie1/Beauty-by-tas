@@ -19,7 +19,7 @@ export const useProduct = (productId?: string) => {
     queryKey: ["product", productId],
     queryFn: async () => {
       if (!productId) return null
-      const response = await axiosInstance.get(`product/details/${productId}`)
+      const response = await axiosInstance.get(`product/details/client/${productId}`)
       return response.data?.results
     },
     enabled: !!productId,

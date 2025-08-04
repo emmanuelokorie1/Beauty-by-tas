@@ -4,15 +4,20 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { FiHeart, FiShare2, FiStar, FiTruck, FiShield } from "react-icons/fi"
 import { FaHeart } from "react-icons/fa"
-import ProductDecriptions from "../../Components/ProductDecriptions"
+
 import { useProduct } from "../../hooks/useProducts"
+import { useCart } from "../../hooks/useCart"
+import { useAuth } from "../../hooks/useAuth"
 import CustomButton from "../../Components/CustomButton"
 import { formatCurrency } from "../../utils/CurrencyFormat"
+import { toast } from "sonner"
 
 function Bag() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { data: product, isLoading, error } = useProduct(id)
+  const { addToCart, isAddingToCart } = useCart()
+  const { isAuthenticated } = useAuth()
   const [tabNavState, setTabNavState] = useState("OVERVIEW")
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -21,8 +26,8 @@ function Bag() {
   const tabNav = [
     { id: "OVERVIEW", label: "Overview", icon: "📋" },
     { id: "HOW TO USE", label: "How to Use", icon: "✨" },
-    { id: "INGREDIENTS", label: "Ingredients", icon: "🧪" },
-    { id: "BENEFITS", label: "Benefits", icon: "💎" },
+    ...(product?.ingredients ? [{ id: "INGREDIENTS", label: "Ingredients", icon: "🧪" }] : []),
+    ...(product?.benefits ? [{ id: "BENEFITS", label: "Benefits", icon: "💎" }] : []),
     { id: "SUSTAINABLE PACKAGING", label: "Sustainability", icon: "🌱" }
   ]
 
@@ -30,6 +35,16 @@ function Bag() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [tabNavState])
+
+  // Handle tab availability - switch to overview if current tab is not available
+  useEffect(() => {
+    if (product) {
+      const availableTabs = tabNav.map(tab => tab.id)
+      if (!availableTabs.includes(tabNavState)) {
+        setTabNavState("OVERVIEW")
+      }
+    }
+  }, [product, tabNavState])
 
   // Loading state with skeleton
   if (isLoading) {
@@ -108,8 +123,28 @@ function Bag() {
   }
 
   const handleAddToCart = () => {
-    // Add to cart logic here
-    console.log(`Adding ${quantity} of ${product.productname} to cart`)
+    if (!isAuthenticated) {
+      toast.error("Please login to add items to cart")
+      navigate("/auth/login")
+      return
+    }
+
+    if (!product?.productId) {
+      toast.error("Product ID is missing")
+      return
+    }
+
+    if ((product.totalStock || 0) <= 0) {
+      toast.error("This item is out of stock")
+      return
+    }
+
+    // Add the specified quantity to cart
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product.productId, 1)
+    }
+    
+    toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to cart!`)
   }
 
   const handleWishlist = () => {
@@ -140,9 +175,9 @@ function Bag() {
                 <span>📋</span> Product Overview
               </h3>
               <p className="text-gray-700 leading-relaxed text-lg">
-                {product.description ||
-                  "Experience the perfect blend of quality and elegance with this premium product. Carefully crafted to meet your beauty needs and enhance your natural radiance."}
-              </p>
+              {product.description ||
+                "Experience the perfect blend of quality and elegance with this premium product. Carefully crafted to meet your beauty needs and enhance your natural radiance."}
+            </p>
             </div>
             
             <div className="grid lg:grid-cols-2 gap-8">
@@ -203,39 +238,50 @@ function Bag() {
               <p className="text-gray-700">Follow these simple steps for the best results with your product.</p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  step: "1",
-                  title: "Preparation",
-                  description: "Ensure your skin is clean and dry before application. Remove any existing makeup or skincare products.",
-                  icon: "🧼"
-                },
-                {
-                  step: "2", 
-                  title: "Application",
-                  description: "Apply a small amount of product evenly across the desired area. Use gentle, circular motions for best results.",
-                  icon: "✨"
-                },
-                {
-                  step: "3",
-                  title: "Finishing", 
-                  description: "Allow the product to set for a few minutes. For best results, avoid touching the area immediately after application.",
-                  icon: "💫"
-                }
-              ].map((item, index) => (
-                <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-primary-deepRed text-white rounded-full flex items-center justify-center font-bold">
-                      {item.step}
+            {product.howtouse ? (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h4 className="font-bold text-gray-800 mb-4 text-lg">📝 Usage Instructions</h4>
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    {product.howtouse}
+                </p>
+              </div>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    step: "1",
+                    title: "Preparation",
+                    description: "Ensure your skin is clean and dry before application. Remove any existing makeup or skincare products.",
+                    icon: "🧼"
+                  },
+                  {
+                    step: "2", 
+                    title: "Application",
+                    description: "Apply a small amount of product evenly across the desired area. Use gentle, circular motions for best results.",
+                    icon: "✨"
+                  },
+                  {
+                    step: "3",
+                    title: "Finishing", 
+                    description: "Allow the product to set for a few minutes. For best results, avoid touching the area immediately after application.",
+                    icon: "💫"
+                  }
+                ].map((item, index) => (
+                  <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-primary-deepRed text-white rounded-full flex items-center justify-center font-bold">
+                        {item.step}
+                      </div>
+                      <span className="text-2xl">{item.icon}</span>
                     </div>
-                    <span className="text-2xl">{item.icon}</span>
+                    <h4 className="font-bold text-gray-800 mb-3">{item.title}</h4>
+                    <p className="text-gray-600 leading-relaxed">{item.description}</p>
                   </div>
-                  <h4 className="font-bold text-gray-800 mb-3">{item.title}</h4>
-                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
             
             <div className="bg-yellow-50 p-6 rounded-2xl border-l-4 border-yellow-400">
               <h4 className="font-bold text-yellow-800 mb-4 flex items-center gap-2">
@@ -254,7 +300,7 @@ function Bag() {
                   <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>
                   Always patch test before first use
                 </li>
-              </ul>
+                </ul>
             </div>
           </div>
         )
@@ -269,41 +315,52 @@ function Bag() {
               <p className="text-gray-700">Discover the natural and effective ingredients that make this product special.</p>
             </div>
             
-            <div className="grid lg:grid-cols-2 gap-8">
+            {product.ingredients ? (
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h4 className="font-bold text-gray-800 mb-4 text-lg">🌟 Active Ingredients</h4>
-                <div className="space-y-3">
-                  {[
-                    { name: "Vitamin E", benefit: "Antioxidant protection" },
-                    { name: "Hyaluronic Acid", benefit: "Deep hydration" },
-                    { name: "Natural Oils", benefit: "Nourishment" },
-                    { name: "Plant Extracts", benefit: "Soothing properties" }
-                  ].map((ingredient, index) => (
-                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
-                      <span className="font-medium text-gray-800">{ingredient.name}</span>
-                      <span className="text-sm text-gray-600">{ingredient.benefit}</span>
-                    </div>
-                  ))}
+                <h4 className="font-bold text-gray-800 mb-4 text-lg">🌟 Product Ingredients</h4>
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    {product.ingredients}
+                  </p>
                 </div>
               </div>
-              
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h4 className="font-bold text-gray-800 mb-4 text-lg">🌿 Natural Extracts</h4>
-                <div className="space-y-3">
-                  {[
-                    { name: "Aloe Vera", benefit: "Calming effect" },
-                    { name: "Chamomile", benefit: "Anti-inflammatory" },
-                    { name: "Green Tea", benefit: "Antioxidant boost" },
-                    { name: "Jojoba Oil", benefit: "Moisturizing" }
-                  ].map((extract, index) => (
-                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
-                      <span className="font-medium text-gray-800">{extract.name}</span>
-                      <span className="text-sm text-gray-600">{extract.benefit}</span>
-                    </div>
-                  ))}
+            ) : (
+              <div className="grid lg:grid-cols-2 gap-8">
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <h4 className="font-bold text-gray-800 mb-4 text-lg">🌟 Active Ingredients</h4>
+                  <div className="space-y-3">
+                    {[
+                      { name: "Vitamin E", benefit: "Antioxidant protection" },
+                      { name: "Hyaluronic Acid", benefit: "Deep hydration" },
+                      { name: "Natural Oils", benefit: "Nourishment" },
+                      { name: "Plant Extracts", benefit: "Soothing properties" }
+                    ].map((ingredient, index) => (
+                      <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                        <span className="font-medium text-gray-800">{ingredient.name}</span>
+                        <span className="text-sm text-gray-600">{ingredient.benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <h4 className="font-bold text-gray-800 mb-4 text-lg">🌿 Natural Extracts</h4>
+                  <div className="space-y-3">
+                    {[
+                      { name: "Aloe Vera", benefit: "Calming effect" },
+                      { name: "Chamomile", benefit: "Anti-inflammatory" },
+                      { name: "Green Tea", benefit: "Antioxidant boost" },
+                      { name: "Jojoba Oil", benefit: "Moisturizing" }
+                    ].map((extract, index) => (
+                      <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                        <span className="font-medium text-gray-800">{extract.name}</span>
+                        <span className="text-sm text-gray-600">{extract.benefit}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             
             <div className="bg-green-50 p-6 rounded-2xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
@@ -327,52 +384,63 @@ function Bag() {
                 <span>💎</span> Benefits
               </h3>
               <p className="text-gray-700">Experience the amazing benefits that this product brings to your beauty routine.</p>
-            </div>
+                  </div>
             
-            <div className="grid lg:grid-cols-2 gap-6">
-              {[
-                {
-                  title: "Long-lasting Results",
-                  description: "Enjoy all-day wear with our advanced formula that stays put through any activity.",
-                  icon: "⏰"
-                },
-                {
-                  title: "Skin-friendly Formula",
-                  description: "Gentle on all skin types, including sensitive skin. Dermatologically tested.",
-                  icon: "🤗"
-                },
-                {
-                  title: "Easy Application",
-                  description: "Smooth, effortless application that blends seamlessly for a natural finish.",
-                  icon: "✨"
-                },
-                {
-                  title: "Versatile Use",
-                  description: "Perfect for both everyday wear and special occasions. Buildable coverage.",
-                  icon: "🎭"
-                },
-                {
-                  title: "Premium Quality",
-                  description: "Made with the finest ingredients for superior performance and results.",
-                  icon: "👑"
-                },
-                {
-                  title: "Value for Money",
-                  description: "A little goes a long way, making this an economical choice for daily use.",
-                  icon: "💰"
-                }
-              ].map((benefit, index) => (
-                <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
-                  <div className="flex items-start gap-4">
-                    <span className="text-3xl">{benefit.icon}</span>
-                    <div>
-                      <h4 className="font-bold text-gray-800 mb-2">{benefit.title}</h4>
-                      <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
-                    </div>
+            {product.benefits ? (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h4 className="font-bold text-gray-800 mb-4 text-lg">🌟 Product Benefits</h4>
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    {product.benefits}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid lg:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "Long-lasting Results",
+                    description: "Enjoy all-day wear with our advanced formula that stays put through any activity.",
+                    icon: "⏰"
+                  },
+                  {
+                    title: "Skin-friendly Formula",
+                    description: "Gentle on all skin types, including sensitive skin. Dermatologically tested.",
+                    icon: "🤗"
+                  },
+                  {
+                    title: "Easy Application",
+                    description: "Smooth, effortless application that blends seamlessly for a natural finish.",
+                    icon: "✨"
+                  },
+                  {
+                    title: "Versatile Use",
+                    description: "Perfect for both everyday wear and special occasions. Buildable coverage.",
+                    icon: "🎭"
+                  },
+                  {
+                    title: "Premium Quality",
+                    description: "Made with the finest ingredients for superior performance and results.",
+                    icon: "👑"
+                  },
+                  {
+                    title: "Value for Money",
+                    description: "A little goes a long way, making this an economical choice for daily use.",
+                    icon: "💰"
+                  }
+                ].map((benefit, index) => (
+                  <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                    <div className="flex items-start gap-4">
+                      <span className="text-3xl">{benefit.icon}</span>
+                  <div>
+                        <h4 className="font-bold text-gray-800 mb-2">{benefit.title}</h4>
+                        <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
                   </div>
                 </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )
 
@@ -393,7 +461,7 @@ function Bag() {
               </p>
               
               <div className="grid lg:grid-cols-2 gap-8">
-                <div>
+                  <div>
                   <h5 className="font-bold text-green-800 mb-4 text-lg">♻️ Eco-Friendly Materials</h5>
                   <ul className="space-y-3">
                     {[
@@ -407,10 +475,10 @@ function Bag() {
                         {item}
                       </li>
                     ))}
-                  </ul>
-                </div>
+                    </ul>
+                  </div>
                 
-                <div>
+                  <div>
                   <h5 className="font-bold text-green-800 mb-4 text-lg">🌍 Sustainability Features</h5>
                   <ul className="space-y-3">
                     {[
@@ -424,7 +492,7 @@ function Bag() {
                         {item}
                       </li>
                     ))}
-                  </ul>
+                    </ul>
                 </div>
               </div>
             </div>
@@ -446,9 +514,6 @@ function Bag() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Product Description Component */}
-      <ProductDecriptions />
-
       {/* Product Details Section */}
       <section className="containers py-12">
         <div className="grid lg:grid-cols-2 gap-12">
@@ -531,7 +596,7 @@ function Bag() {
 
             {/* Quantity & Actions */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-              <div>
+    <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                 <div className="flex items-center gap-3">
                   <button
@@ -556,6 +621,7 @@ function Bag() {
                 <CustomButton
                   text="Add to Cart"
                   onClick={handleAddToCart}
+                  loading={isAddingToCart}
                   classNames="flex-1 bg-primary-deepRed text-white py-3 rounded-lg hover:bg-primary-deepRed/90 transition-all font-medium"
                 />
                 <button
@@ -615,7 +681,7 @@ function Bag() {
                 </button>
               ))}
             </div>
-          </div>
+                </div>
 
           {/* Tab Content */}
           <div className="p-6">

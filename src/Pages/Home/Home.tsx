@@ -16,16 +16,16 @@ import ProductSwipper from "../../Components/ProductSwipper";
 import Look1 from "../../assets/home/look1.svg";
 import Look2 from "../../assets/home/look2.svg";
 
-import community1 from "../../assets/home/community1.svg";
-import community2 from "../../assets/home/community2.svg";
-import community3 from "../../assets/home/community3.svg";
-import community4 from "../../assets/home/community4.svg";
+// import community1 from "../../assets/home/community1.svg";
+// import community2 from "../../assets/home/community2.svg";
+// import community3 from "../../assets/home/community3.svg";
+// import community4 from "../../assets/home/community4.svg";
 
 import { IoIosArrowForward } from "react-icons/io";
 import { useEffect } from "react";
 import {
   useCategories,
-  useBestSeller,
+  // useBestSeller,
   useAlmostSoldOut,
   useNewProduct,
 } from "../../hooks/useCategories";
@@ -54,7 +54,10 @@ function Home() {
 
     look,
 
-    // community1,
+    community1,
+    insta1,
+    insta2,
+    insta3
   } = images;
   const bestSeller = [bestSeller1, bestSeller2, bestSeller3];
 
@@ -62,22 +65,22 @@ function Home() {
     {
       img: community1,
       tab: "Trying out the lip crayons",
-      link: "https://www.instagram.com/reel/DBQxYLdoO9i/?igsh=MTliZTRwN3doc2dzNQ==",
+      link: "https://www.instagram.com/reel/DBQxYLdoO9i/?igsh=MTY1YmdlYTdneXV2aw==",
     },
     {
-      img: community2,
+      img: insta2,
       tab: "ChocoLatte served hot by Martha",
-      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=MXgxc202aHJiejRxag==",
+      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=N3dqbmE4YTZzdWQ2",
     },
     {
-      img: community3,
+      img: insta1,
       tab: "True friendship is in sharing your lip glosses",
-      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=MXgxc202aHJiejRxag==",
+      link: "https://www.instagram.com/p/C8NN5Y9ISR4/?igsh=N3dqbmE4YTZzdWQ2",
     },
     {
-      img: community4,
+      img: insta3,
       tab: "Juicy Lips Activated with Tas",
-      link: "https://www.instagram.com/reel/DFV0hdLImKO/?igsh=MTE1NXN6aWNkaDl2ZA==",
+      link: "https://www.instagram.com/reel/DFV0hdLImKO/?igsh=MTFhd2RlcmphMGcyNA==",
     },
   ];
 
@@ -169,8 +172,6 @@ function Home() {
         );
       })
     : [];
-
-  console.log(newProductData);
 
   const navigate = useNavigate();
 
@@ -434,23 +435,29 @@ function Home() {
 
       <section className="containers">
         <HeaderTextCenter text={"#Beautybytas community"} />
-        <aside className="flex justify-between items-center flex-wrap py-[1.5rem]">
+        <aside className="grid md:grid-cols-4 grid-cols-2 gap-6 py-[2rem]">
           {CommunityData?.map((item, index) => (
             <a
               href={item?.link}
               target="_blank"
               key={index}
-              className="md:w-[24%] w-[48%] mb-[1rem] md:mb-0 cursor-pointer"
+              className="group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer flex flex-col h-[450px]"
             >
-              <div className="md:mb-2 mb-1">
+              <div className="h-[320px] relative overflow-hidden">
                 <img
                   src={item?.img}
                   alt={item?.tab}
-                  className="w-[100%] h-[100%]"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
               </div>
-              <div className="border md:leading-[2rem] line-clamp-2 leading-[1.3rem] md:h-[80px] h-[50px] flex justify-center items-center w-full text-center md:text-[1.1rem] text-[.8rem] rounded-lg uppercase p-2 md:mt-[1rem] mt-[.5rem]">
-                {item?.tab}
+              <div className="flex-1 p-6 bg-white flex items-center justify-center">
+                <div className="text-center">
+                  <h3 className="font-semibold text-gray-800 md:text-md line-clamp-2 text-base uppercase tracking-wider group-hover:text-primary-deepRed transition-colors duration-300">
+                    {item?.tab}
+                  </h3>
+                  <div className="w-0 group-hover:w-12 h-0.5 bg-primary-deepRed mx-auto mt-2 transition-all duration-300"></div>
+                </div>
               </div>
             </a>
           ))}
